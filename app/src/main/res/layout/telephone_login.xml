@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:layout_centerInParent="true">
+
+
+    <ImageView
+        android:id="@+id/backbutton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/back_arrow"/>
+
+    <ImageView
+        android:id="@+id/signInLogo"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/logo"
+        android:layout_centerHorizontal="true"/>
+
+    <LinearLayout
+        android:id="@+id/phone_login_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/signInLogo"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verifiera ditt mobilnummer"
+            android:textColor="@color/winter_white"
+            android:layout_marginBottom="5dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/winter_white"
+            app:startIconDrawable="@drawable/contact"
+            app:startIconTint="@color/white"
+            android:theme="@style/EditTextHint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_edittext"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/signInLogo"
+                android:layout_centerInParent="true"
+                android:padding="5dp"
+                android:hint="@string/telefon_nummer"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/white"
+                app:backgroundTint="@android:color/transparent"
+                android:inputType="phone"
+                android:maxLength="10"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/phone_continue_btn"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phone_login_box"
+            android:layout_centerInParent="true"
+            android:textColor="@color/eerie_black"
+            android:text="@string/continueString"
+            app:backgroundTint="@color/platinum"
+            android:background="@drawable/button_rounded"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_info_text"
+            android:textSize="15sp"
+            android:layout_below="@id/phone_continue_btn"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/winter_white"/>
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+
+            android:text="@string/policy_and_cookie"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/winter_white"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

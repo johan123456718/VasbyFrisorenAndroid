@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/backbutton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/back_arrow"/>
+        <ImageView
+            android:id="@+id/signInLogo"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/logo"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            android:textColor="@color/winter_white"
+            android:layout_below="@+id/signInLogo"
+            android:layout_centerInParent="true"
+            android:textSize="25sp"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/lol"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/signInLogo"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/winter_white"
+                app:startIconDrawable="@drawable/person_selector"
+                app:startIconTint="@color/white"
+                android:theme="@style/EditTextHint"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/firstname_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/signInLogo"
+                    android:layout_centerInParent="true"
+                    android:padding="5dp"
+                    android:hint="@string/firstname"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@android:color/transparent"
+                    android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/winter_white"
+                app:startIconDrawable="@drawable/person_selector"
+                app:startIconTint="@color/white"
+                android:theme="@style/EditTextHint"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/secondname_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/signInLogo"
+                    android:layout_centerInParent="true"
+                    android:padding="5dp"
+                    android:hint="@string/secondname"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@android:color/transparent"
+                    android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/winter_white"
+                app:startIconDrawable="@drawable/email_icon"
+                app:startIconTint="@color/white"
+                android:theme="@style/EditTextHint"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/signInLogo"
+                    android:layout_centerInParent="true"
+                    android:padding="5dp"
+                    android:hint="@string/email"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@android:color/transparent"
+                    android:inputType="textEmailAddress" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                android:textColorHint="@color/winter_white"
+                app:passwordToggleTint="@color/grey_white"
+                app:startIconDrawable="@drawable/lock_icon"
+                app:startIconTint="@color/white"
+                android:theme="@style/EditTextHint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_password_edittext"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:passwordToggleEnabled="true"
+                android:layout_centerInParent="true"
+                android:textColorHint="@color/white"
+                android:hint="@string/password2"
+                app:backgroundTint="@android:color/transparent"
+                android:inputType="textPassword"
+                android:textColor="@color/white"
+                android:background="@color/persian_orange"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                android:textColorHint="@color/winter_white"
+                app:passwordToggleTint="@color/grey_white"
+                app:startIconDrawable="@drawable/lock_icon"
+                app:startIconTint="@color/white"
+                android:theme="@style/EditTextHint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_confPass_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    app:passwordToggleEnabled="true"
+                    android:layout_centerInParent="true"
+                    android:textColorHint="@color/white"
+                    android:hint="@string/confirmPass"
+                    app:backgroundTint="@android:color/transparent"
+                    android:inputType="textPassword"
+                    android:textColor="@color/white"
+                    android:background="@color/persian_orange"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/email_login_button"
+                android:layout_width="280dp"
+                android:layout_height="40dp"
+                android:text="@string/registrera"
+                android:layout_marginTop="25dp"
+                android:textColor="@color/eerie_black"
+                app:backgroundTint="@color/platinum"
+                android:background="@drawable/button_rounded"/>
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

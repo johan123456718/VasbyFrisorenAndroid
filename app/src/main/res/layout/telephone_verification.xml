@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:layout_centerInParent="true">
+
+
+    <ImageView
+        android:id="@+id/backbutton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/back_arrow"/>
+
+    <LinearLayout
+        android:id="@+id/phone_login_box"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/winter_white"
+            app:startIconTint="@color/white"
+            android:theme="@style/EditTextHint"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_edittext"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/signInLogo"
+                android:layout_centerInParent="true"
+                android:padding="5dp"
+                android:hint="Verifieringskod"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/white"
+                app:backgroundTint="@android:color/transparent"
+                android:inputType="number"
+                android:maxLength="6"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_text"
+            android:textColor="@color/winter_white"
+            android:layout_gravity="start"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="10dp"/>
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/policy_and_cookie"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/winter_white"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/phone_continue_btn"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phone_login_box"
+        android:layout_centerInParent="true"
+        android:textColor="@color/eerie_black"
+        android:layout_alignParentEnd="true"
+        android:text="@string/continueString"
+        app:backgroundTint="@color/platinum"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"/>
+
+    <Button
+        android:id="@+id/verification_resend"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phone_login_box"
+        android:layout_centerInParent="true"
+        android:textColor="@color/eerie_black"
+        android:layout_alignParentStart="true"
+        android:text="@string/resend_code"
+        app:backgroundTint="@color/platinum"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"/>
+
+</RelativeLayout>
