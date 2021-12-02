@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/notification_rounded_item"
+    android:padding="5dp"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:layout_margin="5dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:backgroundTint="@color/white"
+        android:id="@+id/settingCardView">
+
+        <ImageView
+            android:id="@+id/notification_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@color/white"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/notification_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/settingCardView"
+        android:textSize="12sp"
+        android:text="Du har en bokning bla bla bla"
+        android:textColor="@color/winter_white"
+        android:layout_toEndOf="@+id/settingCardView"
+        />
+
+    <TextView
+        android:id="@+id/notification_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notification_description"
+        android:layout_toEndOf="@+id/settingCardView"
+        android:textColor="@color/winter_white"
+        android:textSize="8sp"
+        android:text="5 minuter sen"/>
+
+    <TextView
+        android:id="@+id/notification_new_item"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/notification_description"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/white"
+        android:background="@drawable/notification_rounded"/>
+
+</RelativeLayout>
