@@ -2,16 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
-
-
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NOtification"
-        android:textSize="30dp"
-        android:layout_centerInParent="true"/>
+    android:background="@color/eerie_black2">
 
     <ImageView
         android:id="@+id/backbutton"
@@ -20,5 +11,79 @@
         android:layout_marginTop="25dp"
         android:layout_marginStart="5dp"
         android:src="@drawable/back_arrow"/>
+
+    <TextView
+        android:id="@+id/notification_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notifikation"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/notification_underline"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        />
+
+    <LinearLayout
+        android:id="@+id/notification_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        android:background="@color/eerie_black2"
+        android:layout_below="@+id/backbutton"/>
+
+    <RelativeLayout
+        android:id="@+id/empty_notification_div"
+        android:layout_width="380dp"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/backbutton"
+        android:background="@color/eerie_black2"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/empty_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/notification_empty"/>
+
+        <TextView
+            android:id="@+id/notification_empty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_empty_title"
+            android:layout_below="@+id/empty_notification"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/notification_empty_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notification_empty_title"
+            android:layout_centerInParent="true"
+            android:textSize="10sp"
+            android:text="@string/empty_notification_desc"
+            android:textColor="@color/grey_white" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/existing_notification_div"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notification_underline"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

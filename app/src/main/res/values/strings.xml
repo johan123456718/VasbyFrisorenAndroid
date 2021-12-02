@@ -33,4 +33,8 @@
     <string name="deleteAcc">Radera konto</string>
     <string name="save">Spara</string>
     <string name="account_settings">Konto inställningar</string>
+    <string name="notification_empty_title">Finns ingenting här! </string>
+    <string name="empty_notification_desc">Testa att uppdatera sidan, annars har du ingen notis.</string>
+    <string name="newItem">Nytt</string>
+    <string name="notifikation">NOTIFIKATION</string>
 </resources>
