@@ -17,7 +17,7 @@
         android:id="@+id/calendar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/booking"
+        android:text="@string/logga_in"
         android:layout_centerInParent="true"
         android:layout_above="@+id/calendar_underline"
         android:textColor="@color/white"
