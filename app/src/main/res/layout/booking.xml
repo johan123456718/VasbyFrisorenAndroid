@@ -5,15 +5,6 @@
     android:background="@drawable/background">
 
 
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Booking"
-        android:textSize="30dp"
-        android:textColor="@color/winter_white"
-        android:layout_centerHorizontal="true"/>
-
     <ImageView
         android:id="@+id/backbutton"
         android:layout_width="40dp"
@@ -22,9 +13,43 @@
         android:layout_marginStart="5dp"
         android:src="@drawable/back_arrow"/>
 
-    <CalendarView
+    <TextView
+        android:id="@+id/calendar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/booking"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/calendar_underline"
+        android:textColor="@color/white"
+        android:textSize="25sp"/>
+
+    <LinearLayout
+        android:id="@+id/calendar_underline"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/test"/>
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        android:background="@color/eerie_black2"
+        android:layout_below="@+id/backbutton"/>
+
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_below="@+id/calendar_underline"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/calendar_rounded">
+
+        <CalendarView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:theme="@style/CalenderViewCustom"
+            android:dateTextAppearance="@style/CalenderViewDateCustomText"
+            android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+            />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>
