@@ -28,6 +28,8 @@ import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.service.ServiceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private NotificationCompat.Builder notificationBuilder;
     private int notification_nr;
 
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +66,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rViewScrollButton = rootView.findViewById(R.id.recyclerViewScroll_button);
         notificationManager = NotificationManagerCompat.from(rootView.getContext());
         notificationBadge = rootView.findViewById(R.id.notification_badge);
+
+        auth = FirebaseAuth.getInstance();
+
         createNotificationChannel();
         createNotification();
         initRecyclerView();
@@ -71,6 +79,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        user = auth.getCurrentUser();
+        
+        if(user != null){
+            loginText.setText(user.getDisplayName());
+        }
         contactUs.setOnClickListener(this);
         profileImg.setOnClickListener(this);
         loginText.setOnClickListener(this);
@@ -103,13 +116,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.login_text:
-
-                fragment = new SignQuestionFragment();
-                getFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                        .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-                break;
+                FirebaseUser user = auth.getCurrentUser();
+                if(user == null) {
+                    fragment = new SignQuestionFragment();
+                    getFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                            .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                }else{
+                    fragment = new ProfileFragment();
+                    getFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                            .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                }
+            break;
 
             case R.id.notification_bell:
 
