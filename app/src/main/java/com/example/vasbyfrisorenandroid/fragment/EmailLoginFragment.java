@@ -13,10 +13,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.vasbyfrisorenandroid.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class EmailLoginFragment extends Fragment implements View.OnClickListener{
@@ -88,11 +91,19 @@ public class EmailLoginFragment extends Fragment implements View.OnClickListener
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(rootView.getContext(), "Login success", Toast.LENGTH_LONG).show();
-                        getFragmentManager()
-                                .beginTransaction()
-                                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                                .replace(R.id.fragment_container, new HomeFragment()).addToBackStack(null).commit();
+                        if(task.isSuccessful()) {
+                            Toast.makeText(rootView.getContext(), "Inloggningen lyckades", Toast.LENGTH_LONG).show();
+                            getFragmentManager()
+                                    .beginTransaction()
+                                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                    .replace(R.id.fragment_container, new HomeFragment()).addToBackStack(null).commit();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
                 });
     }

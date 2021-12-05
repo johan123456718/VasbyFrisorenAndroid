@@ -8,9 +8,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
+import com.example.vasbyfrisorenandroid.fragment.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -61,6 +63,10 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
 
                     case "Logga ut":
                         FirebaseAuth.getInstance().signOut();
+                        ((AppCompatActivity)view.getContext()).getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                .replace(R.id.fragment_container, new HomeFragment()).addToBackStack(null).commit();
                     break;
 
                 }
