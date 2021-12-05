@@ -118,6 +118,12 @@ public class EmailRegisterFragment extends Fragment implements View.OnClickListe
 
                                 if(task.isSuccessful()){
 
+                                    FirebaseUser userTmp = auth.getCurrentUser();
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(firstname + " " + lastName).build();
+
+                                    userTmp.updateProfile(profileUpdates);
+
                                     User user = new User.UserBuilder(firstname, lastName)
                                             .email(email)
                                             .build();
