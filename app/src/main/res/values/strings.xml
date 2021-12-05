@@ -7,6 +7,7 @@
     <string name="person">Person</string>
     <string name="qr_code">QR-code</string>
     <string name="registrera">Registrera</string>
+
     <string name="gl_mt_l_senord">Glömt lösenord</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
@@ -14,6 +15,7 @@
     <string name="f_rnamn">Förnamn</string>
     <string name="efternamn">Efternamn</string>
     <string name="welcome">Välkommen!</string>
+
     <string name="logga_in">Logga in</string>
     <string name="telefon_nummer">Telefon nummer</string>
     <string name="forgotten_password">Glömt lösenord?</string>
@@ -23,6 +25,7 @@
     <string name="secondname">Efternamn</string>
     <string name="confirmPass">Bekräfta lösenord</string>
     <string name="orText">ELLER</string>
+
     <string name="phone_info_text">När du trycker på "fortsätt". Väsby friösren skickar ett sms med verifieringskod. Meddelande- och datahastigheter kan tillkomma. Det verifierade telefonnumret kan användas för att logga in</string>
     <string name="continueString">Fortsätt</string>
     <string name="policy_and_cookie">Genom att klicka på fortsätt godkänner du våra villkor. Lär dig hur vi behandlar dina uppgifter i vår integritetspolicy och vår cookiepolicy</string>
@@ -32,6 +35,7 @@
     <string name="verify_text">Ange sms-verifieringskoden nedan. Koden skickades till din mobiltelefon.</string>
     <string name="deleteAcc">Radera konto</string>
     <string name="save">Spara</string>
+
     <string name="account_settings">Konto inställningar</string>
     <string name="notification_empty_title">Finns ingenting här! </string>
     <string name="empty_notification_desc">Testa att uppdatera sidan, annars har du ingen notis.</string>

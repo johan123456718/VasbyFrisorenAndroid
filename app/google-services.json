@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "314945777569",
+    "project_id": "vasbyfrisoren-bd8d4",
+    "storage_bucket": "vasbyfrisoren-bd8d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314945777569:android:599328fafad4142ccf65e0",
+        "android_client_info": {
+          "package_name": "com.example.vasbyfrisorenandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314945777569-mn0s0nv336ktqptnd72ur782re9cjkb3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKaCm8SChIasBCfGfwMS23IZVVtE7GdcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314945777569-mn0s0nv336ktqptnd72ur782re9cjkb3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
