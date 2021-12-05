@@ -17,13 +17,14 @@
             android:layout_marginTop="25dp"
             android:layout_marginStart="5dp"
             android:src="@drawable/back_arrow"/>
+
         <ImageView
             android:id="@+id/signInLogo"
             android:layout_width="220dp"
             android:layout_height="220dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:src="@drawable/logo"
-            android:layout_centerHorizontal="true"/>
+            android:src="@drawable/logo" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -167,7 +168,7 @@
 
 
             <Button
-                android:id="@+id/email_login_button"
+                android:id="@+id/email_register_button"
                 android:layout_width="280dp"
                 android:layout_height="40dp"
                 android:text="@string/registrera"

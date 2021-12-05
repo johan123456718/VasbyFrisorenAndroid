@@ -11,14 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> implements View.OnClickListener {
+public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder>{
 
     private List<Setting> settingList;
 
-    public static class SettingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class SettingViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView img;
         private TextView typeOfSetting, description;
@@ -28,12 +29,6 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
             img = itemView.findViewById(R.id.settingImg);
             typeOfSetting = itemView.findViewById(R.id.typeOfSetting);
             description = itemView.findViewById(R.id.setting_description);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), typeOfSetting.getText(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -57,16 +52,24 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         holder.img.setImageResource(setting.getImgResource());
         holder.typeOfSetting.setText(setting.getTypeOfSetting());
         holder.description.setText(setting.getDescription());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                switch(setting.getTypeOfSetting()){
+
+                    case "Logga ut":
+                        FirebaseAuth.getInstance().signOut();
+                    break;
+
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return settingList.size();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        //not used for anything
     }
 }

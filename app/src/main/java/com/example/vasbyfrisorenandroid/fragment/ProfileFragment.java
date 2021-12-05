@@ -60,6 +60,7 @@ public class ProfileFragment extends Fragment {
         settingList.add(new Setting(R.drawable.email_icon, "Email", "Loco"));
         settingList.add(new Setting(R.drawable.email_icon, "Email", "Loco"));
         settingList.add(new Setting(R.drawable.person_stroke, "Radera konto", "Loco"));
+        settingList.add(new Setting(0, "Logga ut", null));
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
