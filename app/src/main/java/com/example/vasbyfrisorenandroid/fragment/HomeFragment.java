@@ -100,6 +100,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         Fragment fragment = null;
         switch(v.getId()) {
+
             case R.id.contact_us:
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:0859031881"));
@@ -117,6 +118,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             case R.id.login_text:
                 FirebaseUser user = auth.getCurrentUser();
+
                 if(user == null) {
                     fragment = new SignQuestionFragment();
                     getFragmentManager()
