@@ -1,23 +1,24 @@
 package com.example.vasbyfrisorenandroid.model.setting;
 
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
+import com.example.vasbyfrisorenandroid.fragment.CustomDialog;
 import com.example.vasbyfrisorenandroid.fragment.HomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder>{
+public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> {
 
     private List<Setting> settingList;
 
@@ -61,6 +62,11 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
 
                 switch(setting.getTypeOfSetting()){
 
+                    case "Email":
+                        CustomDialog dialog = new CustomDialog();
+                        dialog.show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "Lololo");
+                    break;
+
                     case "Logga ut":
                         FirebaseAuth.getInstance().signOut();
                         ((AppCompatActivity)view.getContext()).getSupportFragmentManager()
@@ -78,4 +84,5 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
     public int getItemCount() {
         return settingList.size();
     }
+
 }
