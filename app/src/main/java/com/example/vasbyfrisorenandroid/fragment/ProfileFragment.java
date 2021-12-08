@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -53,6 +54,7 @@ public class ProfileFragment extends Fragment {
     public void onStart() {
         super.onStart();
         FirebaseUser user = auth.getCurrentUser();
+        
         if(user != null){
             profileName.setText(user.getDisplayName());
             profileEmail.setText(user.getEmail());
