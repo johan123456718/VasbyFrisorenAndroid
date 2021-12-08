@@ -127,7 +127,7 @@ public class EmailLoginFragment extends Fragment implements View.OnClickListener
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Toast.makeText(rootView.getContext(), "Inloggningen lyckades", Toast.LENGTH_LONG).show();
+                            Toast.makeText(rootView.getContext(), "Inloggningen lyckades", Toast.LENGTH_SHORT).show();
                             getFragmentManager()
                                     .beginTransaction()
                                     .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
@@ -164,12 +164,12 @@ public class EmailLoginFragment extends Fragment implements View.OnClickListener
                 auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(rootView.getContext(), "you are on!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(rootView.getContext(), "you are on!", Toast.LENGTH_SHORT).show();
 
                     }
                 });
 
-                Toast.makeText(rootView.getContext(), "you are ok", Toast.LENGTH_LONG).show();
+                Toast.makeText(rootView.getContext(), "you are ok", Toast.LENGTH_SHORT).show();
 
             } catch (ApiException e) {
                 e.printStackTrace();
