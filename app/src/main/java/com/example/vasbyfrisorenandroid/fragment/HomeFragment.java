@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 FirebaseUser user = auth.getCurrentUser();
 
                 if(user == null) {
-                    fragment = new SignQuestionFragment();
+                    fragment = new EmailLoginFragment();
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
