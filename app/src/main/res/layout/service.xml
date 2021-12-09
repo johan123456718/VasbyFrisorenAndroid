@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="150dp"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     android:layout_margin="5dp"
     android:clickable="true"
     android:backgroundTint="@color/grey"
@@ -37,12 +37,20 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Loren ipsum"
-        android:gravity="center"
-        android:textSize="13sp"
-        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/serviceCardView"
-        />
+        android:gravity="center"
+        android:text="Loren ipsum"
+        android:textColor="@color/white"
+        android:textSize="13sp" />
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:gravity="center"
+        android:text="Loren ipsum"
+        android:textColor="@color/lightRed"
+        android:textSize="13sp" />
 </RelativeLayout>

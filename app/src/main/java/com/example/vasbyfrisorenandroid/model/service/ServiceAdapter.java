@@ -23,13 +23,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
 
     public static class ServiceViewHolder extends RecyclerView.ViewHolder{
         private ImageView img;
-        private TextView serviceTitle;
+        private TextView serviceTitle, servicePrice;
         private CardView serviceCardView;
 
         public ServiceViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             serviceTitle = itemView.findViewById(R.id.title);
+            servicePrice = itemView.findViewById(R.id.price);
             serviceCardView = itemView.findViewById(R.id.serviceCardView);
         }
     }
@@ -50,7 +51,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         Service service = serviceList.get(position);
         holder.img.setImageResource(service.getImgResource());
         holder.serviceTitle.setText(service.getServiceTitle());
-
+        holder.servicePrice.setText(String.valueOf(service.getPrice()) + ":-");
         holder.serviceCardView.setOnClickListener(this);
     }
 

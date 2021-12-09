@@ -208,20 +208,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initRecyclerView(){
         serviceList = new ArrayList<>();
-        serviceList.add(new Service(R.drawable.logo, "Line"));
-        serviceList.add(new Service(R.drawable.logo, "Line2"));
-        serviceList.add(new Service(R.drawable.logo, "Line3"));
-        serviceList.add(new Service(R.drawable.logo, "Line4"));
-        serviceList.add(new Service(R.drawable.logo, "Line5"));
-        serviceList.add(new Service(R.drawable.logo, "Line6"));
-        serviceList.add(new Service(R.drawable.logo, "Line7"));
-        serviceList.add(new Service(R.drawable.logo, "Line8"));
-        serviceList.add(new Service(R.drawable.logo, "Line9"));
-        serviceList.add(new Service(R.drawable.logo, "Line10"));
-        serviceList.add(new Service(R.drawable.logo, "Line11"));
-        serviceList.add(new Service(R.drawable.logo, "Line12"));
-        serviceList.add(new Service(R.drawable.logo, "Line13"));
-        serviceList.add(new Service(R.drawable.logo, "Line14"));
+        serviceList.add(new Service(R.drawable.klippning, "Klippning", 250));
+        serviceList.add(new Service(R.drawable.tvatt,"Line2", 250));
+        serviceList.add(new Service(R.drawable.skagg, "Line3", 250));
+        serviceList.add(new Service(R.drawable.nopp, "Line4", 250));
+        serviceList.add(new Service(R.drawable.logo, "Line5", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line6", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line7", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line8", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line9", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line10", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line11", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line12", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line13", 0));
+        serviceList.add(new Service(R.drawable.logo, "Line14", 0));
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
