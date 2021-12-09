@@ -108,12 +108,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.profile_img_btn:
-                fragment = new ProfileFragment();
 
-                getFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                        .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                if(user != null) {
+                    fragment = new ProfileFragment();
+
+                    getFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                            .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                }else{
+                    fragment = new EmailLoginFragment();
+
+                    getFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                            .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                }
                 break;
 
             case R.id.login_text:
