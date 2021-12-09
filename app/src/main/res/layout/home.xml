@@ -26,10 +26,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/platinum"
-                app:fabCustomSize="70dp"
-                android:background="@color/persian_orange"
+                android:padding="1dp"
+                android:src="@drawable/person_stroke"
                 app:borderWidth="0dp"
-                android:padding="1dp"/>
+                app:fabCustomSize="70dp"
+                app:maxImageSize="40dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
