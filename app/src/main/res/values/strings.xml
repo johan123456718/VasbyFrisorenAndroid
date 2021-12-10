@@ -41,4 +41,5 @@
     <string name="empty_notification_desc">Testa att uppdatera sidan, annars har du ingen notis.</string>
     <string name="newItem">Nytt</string>
     <string name="notifikation">NOTIFIKATION</string>
+    <string name="service_hint">Sök efter service</string>
 </resources>

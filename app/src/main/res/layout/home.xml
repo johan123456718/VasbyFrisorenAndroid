@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/main_background_two"
     tools:context=".MainActivity"
     android:id="@+id/main_container">
 
@@ -43,7 +43,8 @@
                     android:id="@+id/welcome_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/roboto_light"
                     android:singleLine="true"
                     android:text="@string/welcome"
                     android:textColor="@color/grey_white" />
@@ -52,9 +53,10 @@
                     android:id="@+id/login_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="@string/logga_in"
                     android:textColor="@color/white"
-                    android:layout_marginStart="5dp"/>
+                    android:layout_marginStart="8dp"/>
 
             </LinearLayout>
 
@@ -77,6 +79,7 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/contact"
                 app:tint="@color/platinum" />
+
             <FrameLayout
                 style="?attr/actionButtonStyle"
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -131,68 +134,95 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:iconifiedByDefault="false"
-                android:drawableRight="@drawable/search"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="12sp"
+                android:drawableLeft="@drawable/search"
                 android:textColor="@color/eerie_black"
+                android:drawablePadding="8dp"
                 android:maxLength="20"
-                android:background="@drawable/searchbar_rounded"/>
+                android:inputType="textVisiblePassword"
+                android:hint="@string/service_hint"
+                android:background="@drawable/searchbar_rounded" />
 
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/main_middle_container"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/searchBar_box"
             android:layout_centerInParent="true"
             android:layout_marginTop="40dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            >
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <TextView
-                android:id="@+id/selectedSliderOption"
+                android:id="@+id/serviceTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Service"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
             <LinearLayout
                 android:layout_width="280dp"
                 android:layout_height="1dp"
+                android:layout_below="@+id/serviceTitle"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:layout_marginRight="4dp"
-                android:layout_centerHorizontal="true"
-                android:orientation="vertical"
                 android:background="@color/white"
-                android:layout_below="@+id/selectedSliderOption"/>
-
-            <LinearLayout
-                android:id="@+id/recyclerView_box"
-                android:layout_width="match_parent"
-                android:layout_height="380dp"
                 android:orientation="vertical"
-                android:layout_below="@id/selectedSliderOption">
+                android:visibility="gone" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="4dp"
-                    android:layout_marginStart="4dp"
-                    android:scrollbars="vertical" />
 
-            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/serviceTitle"
+                android:layout_centerInParent="true"
+                android:scrollbars="none" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/main_middle_container">
+
+            <TextView
+                android:id="@+id/productTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Produkter"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/recyclerViewScroll_button"
+                android:layout_below="@id/productTitle"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="1dp"
+                android:padding="5dp"
+                android:useDefaultMargins="true" />
 
             <ImageView
                 android:id="@+id/recyclerViewScroll_button"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/arrow_down"
-                android:layout_below="@+id/recyclerView_box"
-                android:layout_centerInParent="true"/>
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/arrow_down" />
         </RelativeLayout>
-
-
 
     </RelativeLayout>
 
