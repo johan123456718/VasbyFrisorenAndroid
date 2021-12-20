@@ -72,7 +72,7 @@
             android:textColor="@color/eerie_black"
             android:text="@string/continueString"
             app:backgroundTint="@color/platinum"
-            android:background="@drawable/button_rounded"
+            android:background="@drawable/button_rounded_login"
             android:layout_marginTop="5dp"/>
 
         <TextView

@@ -175,7 +175,7 @@
                 android:layout_marginTop="25dp"
                 android:textColor="@color/eerie_black"
                 app:backgroundTint="@color/platinum"
-                android:background="@drawable/button_rounded"/>
+                android:background="@drawable/button_rounded_login"/>
 
 
 

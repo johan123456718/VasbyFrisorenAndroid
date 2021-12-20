@@ -3,7 +3,7 @@
     <string name="home">Home</string>
     <string name="calendar">Calendar</string>
     <string name="notification">Notification</string>
-    <string name="booking">Booking</string>
+    <string name="booking">Bokning</string>
     <string name="person">Person</string>
     <string name="qr_code">QR-code</string>
     <string name="registrera">Registrera</string>
@@ -42,4 +42,22 @@
     <string name="newItem">Nytt</string>
     <string name="notifikation">NOTIFIKATION</string>
     <string name="service_hint">Sök efter service</string>
+    <string name="auto_complete_hint">Välj dag</string>
+    <string name="day">Dag</string>
+    <string name="time">Tid</string>
+    <string name="barber_question">Vem vill du klippa hos?</string>
+    <string name="time_and_date_title">Välj tid och datum</string>
+    <string name="confirm_book">BOKA</string>
+    <string name="extra_service">Extra service</string>
+
+
+    <string-array name="days">
+        <item>Måndag</item>
+        <item>Tisdag</item>
+        <item>Onsdag</item>
+        <item>Torsdag</item>
+        <item>Fredag</item>
+        <item>Lördag</item>
+        <item>Söndag</item>
+    </string-array>
 </resources>
