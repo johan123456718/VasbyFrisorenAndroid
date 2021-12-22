@@ -102,6 +102,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
 
             }
         });
+        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(30));
         bookButton.setOnClickListener(this);
     }
 
@@ -135,7 +136,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         timeSlotLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         timeSlotRecyclerView.setLayoutManager(timeSlotLayoutManager);
         timeSlotRecyclerView.setAdapter(timeSlotAdapter);
-        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(30));
     }
 
     private List<TimeSlot> getTimeSet(Date selectedDate){
