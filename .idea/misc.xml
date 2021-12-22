@@ -20,7 +20,7 @@
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/search.xml" value="0.5661458333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/searchbar_rounded.xml" value="0.5661458333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/settings.xml" value="0.5661458333333333" />
-        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/booking.xml" value="0.32916666666666666" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/booking.xml" value="0.20506756756756755" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/custom_dialog.xml" value="0.5261382799325464" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/email_login.xml" value="0.55" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/email_register.xml" value="0.2672239108409321" />
@@ -35,6 +35,9 @@
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/telephone_login.xml" value="0.55" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/telephone_verification.xml" value="0.4583333333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/time_slot.xml" value="0.1" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/bottom_navigation.xml" value="0.20033783783783785" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/popup_menu.xml" value="0.20033783783783785" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/top_navigation.xml" value="0.20033783783783785" />
       </map>
     </option>
   </component>

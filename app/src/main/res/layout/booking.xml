@@ -106,10 +106,11 @@
             android:layout_toRightOf="@+id/barber_img"
             android:fontFamily="@font/roboto_regular"
             android:paddingLeft="10dp"
-            android:text="abc abc"
+            android:text="@string/first_barber"
             android:textColor="@color/white" />
 
         <ImageView
+            android:id="@+id/spinner_drop_button"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
