@@ -17,29 +17,47 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeAdapter.TimeSlotViewHo
 
 
     private List<TimeSlot> timeSlotList;
-    private int selectedItem;
+    private OnTimeListener onTimeListener;
+    private int selectedPos;
 
-    public static class TimeSlotViewHolder extends RecyclerView.ViewHolder{
+    public class TimeSlotViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView time;
         private CardView cardView;
-        public TimeSlotViewHolder(@NonNull View itemView) {
+        private OnTimeListener onTimeListener;
+
+        public TimeSlotViewHolder(@NonNull View itemView, OnTimeListener onTimeListener) {
             super(itemView);
             time = itemView.findViewById(R.id.text_time_slot);
             cardView = itemView.findViewById(R.id.card_time_slot);
+            this.onTimeListener = onTimeListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            if(getAdapterPosition() == RecyclerView.NO_POSITION){return;}
+
+            notifyItemChanged(selectedPos);
+            selectedPos = getAdapterPosition();
+            notifyItemChanged(selectedPos);
+
+            onTimeListener.onTimeClick(v, getAdapterPosition());
         }
     }
 
 
-    public TimeAdapter(List<TimeSlot> timeSlotList){
+    public TimeAdapter(List<TimeSlot> timeSlotList, OnTimeListener onTimeListener){
         this.timeSlotList = timeSlotList;
-        this.selectedItem = 0;
+        this.onTimeListener = onTimeListener;
+        this.selectedPos = 0;
     }
 
     @NonNull
     @Override
     public TimeSlotViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.time_slot, parent, false);
-        TimeSlotViewHolder timeSlotViewHolder = new TimeSlotViewHolder(view);
+        TimeSlotViewHolder timeSlotViewHolder = new TimeSlotViewHolder(view, onTimeListener);
         return timeSlotViewHolder;
     }
 
@@ -48,21 +66,14 @@ public class TimeAdapter extends RecyclerView.Adapter<TimeAdapter.TimeSlotViewHo
         TimeSlot timeSlot = timeSlotList.get(position);
         holder.time.setText(timeSlot.getTime());
 
-      if(selectedItem == position) {
-            holder.cardView.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.white));
+        if(selectedPos == position){
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(R.color.white));
+            holder.time.setTextColor(holder.itemView.getResources().getColor(R.color.black));
         }else{
-            holder.cardView.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.grey));
+            holder.itemView.setBackgroundColor(holder.itemView.getResources().getColor(R.color.grey));
+            holder.time.setTextColor(holder.itemView.getResources().getColor(R.color.white));
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                int previousItem = selectedItem;
-                selectedItem = position;
-                notifyItemChanged(previousItem);
-                notifyItemChanged(selectedItem);
-            }
-        });
     }
 
     @Override
