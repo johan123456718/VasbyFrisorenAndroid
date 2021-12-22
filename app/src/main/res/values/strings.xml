@@ -50,14 +50,13 @@
     <string name="confirm_book">BOKA</string>
     <string name="extra_service">Extra service</string>
 
+    <string name="first_barber">George Challita</string>
+    <string name="second_barber">Salim xxxxxx</string>
+    <string name="third_barber">Najwa llllll</string>
 
-    <string-array name="days">
-        <item>Måndag</item>
-        <item>Tisdag</item>
-        <item>Onsdag</item>
-        <item>Torsdag</item>
-        <item>Fredag</item>
-        <item>Lördag</item>
-        <item>Söndag</item>
+    <string-array name="barbers">
+        <item>@string/first_barber</item>
+        <item>@string/second_barber</item>
+        <item>@string/third_barber</item>
     </string-array>
 </resources>

@@ -3,11 +3,14 @@ package com.example.vasbyfrisorenandroid.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +61,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private AppCompatButton bookButton;
     private DatabaseReference dbReference;
     private int id, selectedItem;
+    private ImageView barberSpinner, barberImg;
 
     @Nullable
     @Override
@@ -69,6 +73,8 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
         bookButton = rootView.findViewById(R.id.book_button);
         barberName = rootView.findViewById(R.id.barber_name);
+        barberSpinner = rootView.findViewById(R.id.spinner_drop_button);
+        barberImg = rootView.findViewById(R.id.barber_img);
 
         initCalendar();
 
@@ -104,6 +110,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         });
         timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(30));
         bookButton.setOnClickListener(this);
+        barberSpinner.setOnClickListener(this);
     }
 
 
@@ -195,6 +202,9 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     public void onClick(View v) {
         switch(v.getId()) {
 
+            case R.id.spinner_drop_button:
+                showPopUp(v);
+            break;
 
             case R.id.book_button:
                 Map<String, Object> serviceInfo = new HashMap<>();
@@ -209,8 +219,20 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
 
                 serviceInfo.put("booked_time", bookedTimeInfo);
                 serviceInfo.put("barber", barberName.getText());
-                //add barber too
-                dbReference.child(String.valueOf(id + 1)).setValue(serviceInfo);
+
+                dbReference.child(String.valueOf(id + 1)).setValue(serviceInfo, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        HomeFragment fragment= new HomeFragment();
+                        getActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                .replace(R.id.fragment_container, fragment)
+                                .commit();
+                        Toast.makeText(v.getContext(), "Bokningen lyckades!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             break;
 
         }
@@ -236,4 +258,36 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     public void onTimeClick(View view, int position) {
         selectedItem = position;
     }
+
+    private void showPopUp(View v){
+        PopupMenu popupMenu =  new PopupMenu(rootView.getContext(), v);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch(menuItem.getItemId()){
+
+                    case R.id.barber1:
+                            barberName.setText(R.string.first_barber);
+                            barberImg.setImageResource(R.drawable.profile_img_test);
+                    return true;
+
+                    case R.id.barber2:
+                            barberName.setText(R.string.second_barber);
+                            barberImg.setImageResource(R.drawable.app_icon);
+                    return true;
+
+                    case R.id.barber3:
+                            barberName.setText(R.string.third_barber);
+                            barberImg.setImageResource(R.drawable.logo);
+                    return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+        popupMenu.inflate(R.menu.popup_menu);
+        popupMenu.show();
+    }
+
 }
