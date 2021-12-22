@@ -9,13 +9,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
@@ -27,6 +31,7 @@ import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
 import com.example.vasbyfrisorenandroid.model.product.Product;
 import com.example.vasbyfrisorenandroid.model.product.ProductAdapter;
+import com.example.vasbyfrisorenandroid.model.service.OnServiceListener;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.service.ServiceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, OnServiceListener {
 
     private View rootView;
 
@@ -170,7 +175,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         serviceRecyclerView.setLayoutManager(serviceLayoutManager);
         serviceRecyclerView.setHasFixedSize(true);
 
-        serviceAdapter = new ServiceAdapter(serviceList);
+        serviceAdapter = new ServiceAdapter(serviceList, this);
         serviceRecyclerView.setAdapter(serviceAdapter);
     }
 
@@ -265,5 +270,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
                 break;
         }
+    }
+
+    @Override
+    public void onServiceClick(View v, int position) {
+
+        AppCompatActivity activity = (AppCompatActivity) v.getContext();
+
+        Fragment fragment = new BookingFragment();
+        Service service = serviceList.get(position);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("service", service);
+        fragment.setArguments(bundle);
+
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+
+
+
     }
 }

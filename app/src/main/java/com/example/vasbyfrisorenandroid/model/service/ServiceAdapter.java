@@ -17,32 +17,43 @@ import com.example.vasbyfrisorenandroid.fragment.BookingFragment;
 
 import java.util.List;
 
-public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder> implements View.OnClickListener {
+public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder> {
 
     private List<Service> serviceList;
+    private OnServiceListener onServiceListener;
 
-    public static class ServiceViewHolder extends RecyclerView.ViewHolder{
+    public static class ServiceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView img;
         private TextView serviceTitle, servicePrice;
         private CardView serviceCardView;
+        private OnServiceListener onServiceListener;
 
-        public ServiceViewHolder(View itemView) {
+        public ServiceViewHolder(View itemView, OnServiceListener onServiceListener) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             serviceTitle = itemView.findViewById(R.id.title);
             servicePrice = itemView.findViewById(R.id.price);
             serviceCardView = itemView.findViewById(R.id.serviceCardView);
+            this.onServiceListener = onServiceListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onServiceListener.onServiceClick(v, getAdapterPosition());
         }
     }
 
-    public ServiceAdapter(List<Service> serviceList){
+    public ServiceAdapter(List<Service> serviceList, OnServiceListener onServiceListener){
         this.serviceList = serviceList;
+        this.onServiceListener = onServiceListener;
     }
+
     @NonNull
     @Override
     public ServiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.service, parent, false);
-        ServiceViewHolder serviceViewHolder = new ServiceViewHolder(view);
+        ServiceViewHolder serviceViewHolder = new ServiceViewHolder(view, onServiceListener);
         return serviceViewHolder;
     }
 
@@ -52,7 +63,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
         holder.img.setImageResource(service.getImgResource());
         holder.serviceTitle.setText(service.getServiceTitle());
         holder.servicePrice.setText(String.valueOf(service.getPrice()) + ":-");
-        holder.serviceCardView.setOnClickListener(this);
     }
 
     @Override
@@ -61,20 +71,4 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
     }
 
 
-
-    @Override
-    public void onClick(View v) {
-        AppCompatActivity activity = (AppCompatActivity) v.getContext();
-
-        switch (v.getId()){
-
-            case R.id.serviceCardView:
-                Fragment fragment = new BookingFragment();
-                activity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                        .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-            break;
-        }
-    }
 }
