@@ -3,11 +3,13 @@ package com.example.vasbyfrisorenandroid.model.timeslot;
 public class TimeSlot {
 
     private String time;
-    private boolean isAvailable;
+    private boolean available;
 
-    public TimeSlot(String time, boolean isAvailable){
+    public TimeSlot(){}
+
+    public TimeSlot(String time, boolean available){
         this.time = time;
-        this.isAvailable = isAvailable;
+        this.available = available;
     }
 
     public String getTime() {
@@ -15,6 +17,6 @@ public class TimeSlot {
     }
 
     public boolean isAvailable() {
-        return isAvailable;
+        return available;
     }
 }

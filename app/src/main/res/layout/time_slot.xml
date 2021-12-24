@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="4dp"
+    app:cardCornerRadius="10dp"
     app:cardBackgroundColor="@color/white"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/white"
     android:id="@+id/card_time_slot">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_time_slot"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:orientation="horizontal">
+        android:textSize="10sp"
+        android:padding="4dp"
+        android:text="Lorem ipsum"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center_horizontal"/>
 
-        <TextView
-            android:id="@+id/text_time_slot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="Lorem ipsum"
-            android:textColor="@color/black"
-            android:fontFamily="@font/roboto_regular"
-            android:gravity="center_horizontal"/>
 
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
