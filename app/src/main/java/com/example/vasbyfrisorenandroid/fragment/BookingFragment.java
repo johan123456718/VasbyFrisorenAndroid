@@ -121,7 +121,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         //
 
         timeSlotList = new ArrayList<>();
-
+        //for getting current data
         dbTimeSlotReference.child(barberName.getText().toString())
                 .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
                 .child(Days.of(Calendar.getInstance().getTime().getDay()).name())
@@ -167,6 +167,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     public void onStart() {
         super.onStart();
 
+        //For selecting new date
         calendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
