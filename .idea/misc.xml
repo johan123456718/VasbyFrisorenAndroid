@@ -11,6 +11,7 @@
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/calender_selector.xml" value="0.5661458333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/card_background_booking.xml" value="0.1962962962962963" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/card_foreground_booking.xml" value="0.5619791666666667" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/cardview_border_booking.xml" value="0.22364864864864864" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/contact2.xml" value="0.5661458333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/email_icon.xml" value="0.5661458333333333" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/drawable/home_indicator_background.xml" value="0.36614583333333334" />
@@ -34,7 +35,7 @@
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/sign_question.xml" value="0.55" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/telephone_login.xml" value="0.55" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/telephone_verification.xml" value="0.4583333333333333" />
-        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/time_slot.xml" value="0.1" />
+        <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/layout/time_slot.xml" value="0.25" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/bottom_navigation.xml" value="0.20033783783783785" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/popup_menu.xml" value="0.20033783783783785" />
         <entry key="..\:/Users/johan/Documents/Programmering/Android/VasbyFrisorenAndroid/app/src/main/res/menu/top_navigation.xml" value="0.20033783783783785" />
