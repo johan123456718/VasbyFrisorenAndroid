@@ -53,6 +53,8 @@
     <string name="first_barber">George Challita</string>
     <string name="second_barber">Salim xxxxxx</string>
     <string name="third_barber">Najwa llllll</string>
+    <string name="my_booking">Mina bokningar</string>
+    <string name="settings">Inställningar</string>
 
     <string-array name="barbers">
         <item>@string/first_barber</item>

@@ -5,24 +5,25 @@
     android:background="@drawable/profile_background">
 
     <RelativeLayout
+        android:id="@+id/profile_div"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="280dp">
 
         <ImageView
             android:id="@+id/backbutton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="25dp"
             android:layout_marginStart="5dp"
-            android:src="@drawable/back_arrow"/>
+            android:layout_marginTop="25dp"
+            android:src="@drawable/back_arrow" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_img"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_below="@id/backbutton"
-            android:src="@drawable/profile_img_test"
-            android:layout_centerHorizontal="true"/>
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/backbutton"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile_img_test" />
 
         <TextView
             android:id="@+id/profile_name"
@@ -38,58 +39,106 @@
             android:id="@+id/profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="email@hotmail.com"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/profile_name"
-            android:textColor="@color/grey_white"/>
+            android:layout_centerHorizontal="true"
+            android:text="email@hotmail.com"
+            android:textColor="@color/grey_white" />
+
+        <TextView
+            android:id="@+id/profile_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_email"
+            android:layout_centerHorizontal="true"
+            android:text="Poäng: 0"
+            android:textColor="@color/grey_white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_points"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:weightSum="2"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/profile_booking"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/calendar_profile"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/my_booking"
+                android:textColor="@color/grey_white"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/profile_settings"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/settings_profile"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/settings"
+                android:textColor="@color/grey_white"
+                android:textSize="10sp" />
+        </LinearLayout>
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/profile_middle_container"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true">
+        android:layout_below="@id/profile_div"
+        android:layout_centerHorizontal="true">
 
         <TextView
-            android:id="@+id/account_settings"
+            android:id="@+id/account_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:text="@string/account_settings"
             android:textColor="@color/winter_white"
-            android:layout_centerVertical="true"
-            android:textSize="20sp"
-            android:layout_marginStart="5dp"/>
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/recyclerView_box"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:orientation="vertical"
-            android:layout_below="@id/account_settings">
+            android:layout_height="match_parent"
+            android:layout_above="@id/profile_save_button"
+            android:layout_below="@id/account_title"
+            android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@id/account_title"
                 android:padding="5dp"
-                android:layout_marginStart="4dp"
                 android:scrollbars="vertical" />
         </LinearLayout>
 
         <Button
+            android:id="@+id/profile_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recyclerView_box"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="20dp"
             android:backgroundTint="@color/grey_white"
+            android:fontFamily="@font/roboto_regular"
+            android:text="@string/save"
             android:textColor="@color/eerie_black"
             android:textSize="10sp"
-            android:layout_marginStart="20dp"
-            android:layout_centerInParent="true"
-            android:text="@string/save"/>
-
+            android:visibility="gone"/>
     </RelativeLayout>
-
 
 
 </RelativeLayout>
