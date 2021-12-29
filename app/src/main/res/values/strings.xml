@@ -2,28 +2,28 @@
     <string name="app_name">Väsby Frisören</string>
     <string name="home">Home</string>
     <string name="calendar">Calendar</string>
-    <string name="notification">Notification</string>
-    <string name="booking">Bokning</string>
+    <string name="myBooking">BOKNING</string>
     <string name="person">Person</string>
     <string name="qr_code">QR-code</string>
     <string name="registrera">Registrera</string>
 
     <string name="gl_mt_l_senord">Glömt lösenord</string>
     <string name="password">Password</string>
-    <string name="email">Email</string>
+    <string name="email"><font size="50">Email</font></string>
     <string name="inloggning">Inloggning</string>
     <string name="f_rnamn">Förnamn</string>
     <string name="efternamn">Efternamn</string>
     <string name="welcome">Välkommen!</string>
 
     <string name="logga_in">Logga in</string>
-    <string name="telefon_nummer">Telefon nummer</string>
+    <string name="logga_in2"><font size="50">Logga in</font></string>
+    <string name="telefon_nr"><font size="50">Telefon nr</font></string>
     <string name="forgotten_password">Glömt lösenord?</string>
-    <string name="password2">Lösenord</string>
+    <string name="password2"><font size="50">Lösenord</font></string>
     <string name="create_account">Skapa ett konto</string>
-    <string name="firstname">Förnamn</string>
-    <string name="secondname">Efternamn</string>
-    <string name="confirmPass">Bekräfta lösenord</string>
+    <string name="firstname"><font size="50">Förnamn</font></string>
+    <string name="secondname"><font size="50">Efternamn</font></string>
+    <string name="confirmPass"><font size="50">Bekräfta lösenord</font></string>
     <string name="orText">ELLER</string>
 
     <string name="phone_info_text">När du trycker på "fortsätt". Väsby friösren skickar ett sms med verifieringskod. Meddelande- och datahastigheter kan tillkomma. Det verifierade telefonnumret kan användas för att logga in</string>
@@ -37,8 +37,8 @@
     <string name="save">Spara</string>
 
     <string name="account_settings">Konto inställningar</string>
-    <string name="notification_empty_title">Finns ingenting här! </string>
-    <string name="empty_notification_desc">Testa att uppdatera sidan, annars har du ingen notis.</string>
+    <string name="mybooking_empty_title">Finns ingenting här! </string>
+    <string name="empty_mybooking_desc">Testa att uppdatera sidan, annars har du ingen bokning.</string>
     <string name="newItem">Nytt</string>
     <string name="notifikation">NOTIFIKATION</string>
     <string name="service_hint">Sök efter service</string>

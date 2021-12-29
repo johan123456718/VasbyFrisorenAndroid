@@ -28,32 +28,43 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/notification_description"
+        android:id="@+id/mybooking_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/settingCardView"
-        android:textSize="12sp"
+        android:layout_toEndOf="@+id/settingCardView"
+        android:maxLines="1"
         android:text="Du har en bokning bla bla bla"
         android:textColor="@color/winter_white"
-        android:layout_toEndOf="@+id/settingCardView"
-        />
+        android:textSize="10sp" />
 
     <TextView
-        android:id="@+id/notification_time"
+        android:id="@+id/mybooking_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/notification_description"
+        android:layout_below="@+id/mybooking_description"
         android:layout_toEndOf="@+id/settingCardView"
         android:textColor="@color/winter_white"
         android:textSize="8sp"
         android:text="5 minuter sen"/>
 
     <TextView
-        android:id="@+id/notification_new_item"
+        android:id="@+id/mybooking_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mybooking_time"
+        android:layout_toEndOf="@+id/settingCardView"
+        android:textColor="@color/winter_white"
+        android:textSize="8sp"
+        android:maxLines="1"
+        android:text="Min service"/>
+
+    <TextView
+        android:id="@+id/mybooking_new_item"
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/notification_description"
+        android:layout_below="@+id/mybooking_description"
         android:layout_marginEnd="10dp"
         android:textColor="@color/white"
         android:background="@drawable/notification_rounded"/>

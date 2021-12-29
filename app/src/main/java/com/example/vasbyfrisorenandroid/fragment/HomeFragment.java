@@ -1,13 +1,8 @@
 package com.example.vasbyfrisorenandroid.fragment;
 
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,17 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.vasbyfrisorenandroid.MainActivity;
+
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
 import com.example.vasbyfrisorenandroid.model.product.Product;
@@ -37,6 +30,11 @@ import com.example.vasbyfrisorenandroid.model.service.ServiceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,10 +62,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
     private ImageButton contactUs, notificationBell;
 
     //Notification
-    private static final int NOTIFICATION_ID = 1;
-    private NotificationManagerCompat  notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
-    private int notification_nr;
+
+    private int myBookingCount;
 
     //Firebase
     private FirebaseAuth auth;
@@ -82,16 +78,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
         loginText = rootView.findViewById(R.id.login_text);
         notificationBell = rootView.findViewById(R.id.notification_bell);
         rViewScrollButton = rootView.findViewById(R.id.recyclerViewScroll_button);
-        notificationManager = NotificationManagerCompat.from(rootView.getContext());
         notificationBadge = rootView.findViewById(R.id.notification_badge);
 
         auth = FirebaseAuth.getInstance();
 
-        createNotificationChannel();
-        createNotification();
         initServiceRecyclerView();
         initProductRecyclerView();
-        notification_nr = 0;
         return rootView;
     }
 
@@ -102,7 +94,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
         
         if(user != null){
             loginText.setText(user.getDisplayName());
+            initNotificationCount();
+        }else{
+            FirebaseAuth.getInstance().signOut();
         }
+
         contactUs.setOnClickListener(this);
         profileImg.setOnClickListener(this);
         loginText.setOnClickListener(this);
@@ -113,43 +109,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
     public void onDestroy() {
         super.onDestroy();
         serviceList.clear();
-    }
-
-    private void createNotificationChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "väsbyfrisören";
-            String description = "notification";
-
-            int important = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("notification", name, important);
-            channel.setDescription(description);
-
-            NotificationManager manager = (NotificationManager) getActivity().getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-    }
-
-    private void createNotification() {
-        Intent intent = new Intent(rootView.getContext(), MainActivity.class);
-
-        intent.putExtra("notification", true);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(rootView.getContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        notificationBuilder = new NotificationCompat.Builder(getActivity(), "notification")
-            .setSmallIcon(R.drawable.logo)
-            .setContentTitle("Bokningstid")
-            .setContentText("Du har 15 min kvar tills din bokning startar.")
-             .setStyle(new NotificationCompat.BigTextStyle()
-                     .bigText(getString(R.string.bigText_notification))
-                     .setBigContentTitle("Bokningstid")
-                     .setSummaryText("Bokning")
-             )
-             .setContentIntent(pendingIntent)
-             .setAutoCancel(true)
-            .setCategory(Notification.CATEGORY_MESSAGE)
-            .setPriority(Notification.PRIORITY_DEFAULT);
     }
 
     private void initServiceRecyclerView(){
@@ -249,9 +208,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
 
             case R.id.notification_bell:
 
-                fragment = new NotificationFragment();
+                fragment = new MyBookingsFragment();
                 Bundle data = new Bundle();
-                data.putInt("lol", notification_nr);
+                data.putInt("bookingCount", myBookingCount);
                 fragment.setArguments(data);
 
                 getFragmentManager()
@@ -265,11 +224,32 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
                 if (serviceRecyclerView.canScrollVertically(1)) { //-1 up, 1 down
                     serviceRecyclerView.smoothScrollToPosition(serviceLayoutManager.findFirstVisibleItemPosition() + 4);
                 }
-                notification_nr++;
-                notificationBadge.setText(String.valueOf(notification_nr));
-                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+                //notification_nr++;
                 break;
         }
+    }
+
+    private void initNotificationCount(){
+
+        FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(auth.getCurrentUser().getUid())
+                .child("bookings").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                myBookingCount = (int) snapshot.getChildrenCount();
+                if(myBookingCount > 0)
+                    notificationBadge.setText(String.valueOf(myBookingCount));
+                else
+                    notificationBadge.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -288,8 +268,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
                 .beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
                 .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-
-
-
     }
 }

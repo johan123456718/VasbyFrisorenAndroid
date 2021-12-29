@@ -9,6 +9,10 @@ public class Service implements Parcelable {
     private String serviceTitle;
     private int price;
 
+    public Service(){
+
+    }
+
     public Service(int imgResource, String text1, int price){
         this.imgResource = imgResource;
         this.serviceTitle = text1;

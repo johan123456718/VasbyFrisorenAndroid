@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.model.user.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
@@ -27,12 +28,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class EmailRegisterFragment extends Fragment implements View.OnClickListener{
 
     private View rootView;
     private FirebaseAuth auth;
     private Button regButton;
-    private TextInputEditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText, confPasswordEditText;
+    private TextInputEditText firstNameEditText,
+            lastNameEditText,
+            emailEditText,
+            phoneNumberEditText,
+            passwordEditText,
+            confPasswordEditText;
 
     @Nullable
     @Override
@@ -45,6 +53,7 @@ public class EmailRegisterFragment extends Fragment implements View.OnClickListe
         emailEditText = rootView.findViewById(R.id.email_edittext);
         passwordEditText = rootView.findViewById(R.id.email_password_edittext);
         confPasswordEditText = rootView.findViewById(R.id.email_confPass_edittext);
+        phoneNumberEditText = rootView.findViewById(R.id.phone_nr_edittext);
 
         auth = FirebaseAuth.getInstance();
         return rootView;
@@ -92,6 +101,7 @@ public class EmailRegisterFragment extends Fragment implements View.OnClickListe
         String firstname = firstNameEditText.getText().toString().trim();
         String lastName = lastNameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
+        String phoneNr = phoneNumberEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confPassword = confPasswordEditText.getText().toString().trim();
 
@@ -134,12 +144,23 @@ public class EmailRegisterFragment extends Fragment implements View.OnClickListe
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(rootView.getContext(), "Ditt konto skapades!", Toast.LENGTH_LONG).show();
-                                                    getFragmentManager()
-                                                            .beginTransaction()
-                                                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                                                            .replace(R.id.fragment_container, new EmailLoginFragment())
-                                                            .addToBackStack(null).commit();
+
+                                                    FirebaseDatabase.getInstance().getReference("Users")
+                                                            .child(auth.getCurrentUser().getUid())
+                                                            .child("phone_nr")
+                                                            .setValue(phoneNr)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+
+                                                                    Toast.makeText(rootView.getContext(), "Ditt konto skapades!", Toast.LENGTH_LONG).show();
+                                                                    getFragmentManager()
+                                                                            .beginTransaction()
+                                                                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                                                            .replace(R.id.fragment_container, new EmailLoginFragment())
+                                                                            .addToBackStack(null).commit();
+                                                                }
+                                                            });
                                                 }
                                             });
 
