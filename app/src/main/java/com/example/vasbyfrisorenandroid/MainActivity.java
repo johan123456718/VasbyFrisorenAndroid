@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import com.example.vasbyfrisorenandroid.fragment.HomeFragment;
-import com.example.vasbyfrisorenandroid.fragment.NotificationFragment;
+import com.example.vasbyfrisorenandroid.fragment.MyBookingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             final boolean fromNotification = extras.getBoolean("notification");
 
             if (fromNotification) {
-                Fragment fr = new NotificationFragment();
+                Fragment fr = new MyBookingsFragment();
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, fr).addToBackStack(null).commit();

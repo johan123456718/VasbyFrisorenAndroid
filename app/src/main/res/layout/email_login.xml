@@ -47,7 +47,7 @@
                     android:layout_below="@id/signInLogo"
                     android:layout_centerInParent="true"
                     android:layout_marginBottom="5dp"
-                    android:hint="@string/logga_in"
+                    android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:padding="5dp"
                     android:textColor="@color/white"

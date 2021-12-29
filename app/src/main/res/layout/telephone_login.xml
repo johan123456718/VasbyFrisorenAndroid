@@ -54,7 +54,7 @@
                 android:layout_below="@id/signInLogo"
                 android:layout_centerInParent="true"
                 android:padding="5dp"
-                android:hint="@string/telefon_nummer"
+                android:hint="@string/telefon_nr"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/white"
                 app:backgroundTint="@android:color/transparent"

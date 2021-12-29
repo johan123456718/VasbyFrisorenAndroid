@@ -1,7 +1,13 @@
 package com.example.vasbyfrisorenandroid.fragment;
 
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,13 +21,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.vasbyfrisorenandroid.MainActivity;
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
-import com.example.vasbyfrisorenandroid.model.Date.Days;
+import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
+import com.example.vasbyfrisorenandroid.model.date.Days;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.timeslot.OnTimeListener;
 import com.example.vasbyfrisorenandroid.model.timeslot.TimeAdapter;
@@ -33,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,6 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,9 +71,14 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private TextView selectedServiceTitle, selectedServicePrice, barberName;
     private CircleImageView selectedServiceImg;
     private AppCompatButton bookButton;
-    private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
+    private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference, dbUsersReference;
     private int id, selectedItem;
     private ImageView barberSpinner, barberImg;
+
+
+    private static final int NOTIFICATION_ID = 1;
+    private NotificationManagerCompat notificationManager;
+    private NotificationCompat.Builder notificationBuilder;
 
     @Nullable
     @Override
@@ -74,6 +91,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         bookButton = rootView.findViewById(R.id.book_button);
         barberName = rootView.findViewById(R.id.barber_name);
         barberSpinner = rootView.findViewById(R.id.spinner_drop_button);
+        notificationManager = NotificationManagerCompat.from(rootView.getContext());
         barberImg = rootView.findViewById(R.id.barber_img);
 
         initCalendar();
@@ -159,7 +177,8 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
             dbBookingReference = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bookings");
             initId();
         }
-
+        createNotificationChannel();
+        createNotification();
         return rootView;
     }
 
@@ -171,7 +190,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         calendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-
                 dbTimeSlotReference
                         .child(barberName.getText().toString())
                         .child(String.valueOf(date.get(Calendar.WEEK_OF_YEAR)))
@@ -349,6 +367,43 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         });
     }
 
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "väsbyfrisören";
+            String description = "notification";
+
+            int important = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notification", name, important);
+            channel.setDescription(description);
+
+            NotificationManager manager = (NotificationManager) getActivity().getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
+    private void createNotification() {
+        Intent intent = new Intent(rootView.getContext(), MainActivity.class);
+
+        intent.putExtra("notification", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(rootView.getContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        notificationBuilder = new NotificationCompat.Builder(getActivity(), "notification")
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Bokningstid")
+                .setContentText("Din bokning gick igenom")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(getString(R.string.bigText_notification))
+                        .setBigContentTitle("Bokningstid")
+                        .setSummaryText("Bokning")
+                )
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setCategory(Notification.CATEGORY_MESSAGE)
+                .setPriority(Notification.PRIORITY_DEFAULT);
+    }
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
@@ -360,16 +415,19 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
             case R.id.book_button:
 
                 Map<String, Object> serviceInfo = new HashMap<>();
-                Map<String, Object> bookedTimeInfo = new HashMap<>();
                 serviceInfo.put("service", service);
 
-                bookedTimeInfo.put("booked_date", calendar.getSelectedDate().getTime().getDate());
-                bookedTimeInfo.put("booked_day", Days.of(calendar.getSelectedDate().getTime().getDay()).name());
-                bookedTimeInfo.put("year", calendar.getSelectedDate().getTime().getYear() + 1900); //adding 1900 in order to get the year
-                bookedTimeInfo.put("book_created", LocalDate.now().toString());
-                bookedTimeInfo.put("time_taken", timeSlotList.get(selectedItem).getTime());
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String date = formatter.format(calendar.getSelectedDate().getTime());
+                BookedTime bookedTime = new BookedTime
+                        .BookedTimeBuilder(LocalDate.now().toString(), timeSlotList.get(selectedItem).getTime())
+                        .bookedDate(date)
+                        .bookedDay(Days.of(calendar.getSelectedDate().getTime().getDay()).name())
+                        .year(calendar.getSelectedDate().getTime().getYear() + 1900)
+                        .isChecked(false)
+                        .build();
 
-                serviceInfo.put("booked_time", bookedTimeInfo);
+                serviceInfo.put("bookedTime", bookedTime);
                 serviceInfo.put("barber", barberName.getText());
 
                 dbBookingReference.child(String.valueOf(id + 1)).setValue(serviceInfo, new DatabaseReference.CompletionListener() {
@@ -392,6 +450,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                                 .setValue(false);
 
                         Toast.makeText(v.getContext(), "Bokningen lyckades!", Toast.LENGTH_SHORT).show();
+                        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
                     }
                 });
 

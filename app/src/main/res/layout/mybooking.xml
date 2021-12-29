@@ -13,18 +13,17 @@
         android:src="@drawable/back_arrow"/>
 
     <TextView
-        android:id="@+id/notification_title"
+        android:id="@+id/mybooking_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/notifikation"
+        android:layout_above="@+id/mybooking_underline"
         android:layout_centerInParent="true"
-        android:layout_above="@+id/notification_underline"
+        android:text="@string/myBooking"
         android:textColor="@color/white"
-        android:textSize="25sp"
-        />
+        android:textSize="25sp" />
 
     <LinearLayout
-        android:id="@+id/notification_underline"
+        android:id="@+id/mybooking_underline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:orientation="vertical"
@@ -32,7 +31,7 @@
         android:layout_below="@+id/backbutton"/>
 
     <RelativeLayout
-        android:id="@+id/empty_notification_div"
+        android:id="@+id/empty_mybooking_div"
         android:layout_width="380dp"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -41,7 +40,7 @@
         android:visibility="visible">
 
         <ImageView
-            android:id="@+id/empty_notification"
+            android:id="@+id/empty_booking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -49,31 +48,31 @@
             android:src="@drawable/notification_empty"/>
 
         <TextView
-            android:id="@+id/notification_empty_title"
+            android:id="@+id/mybooking_empty_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/notification_empty_title"
-            android:layout_below="@+id/empty_notification"
+            android:text="@string/mybooking_empty_title"
+            android:layout_below="@+id/empty_booking"
             android:textColor="@color/white"
             android:layout_centerInParent="true"/>
 
         <TextView
-            android:id="@+id/notification_empty_description"
+            android:id="@+id/mybooking_empty_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/notification_empty_title"
+            android:layout_below="@+id/mybooking_empty_title"
             android:layout_centerInParent="true"
-            android:textSize="10sp"
-            android:text="@string/empty_notification_desc"
-            android:textColor="@color/grey_white" />
+            android:text="@string/empty_mybooking_desc"
+            android:textColor="@color/grey_white"
+            android:textSize="10sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/existing_notification_div"
+        android:id="@+id/existing_mybooking_div"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/notification_underline"
+        android:layout_below="@id/mybooking_underline"
         android:layout_centerInParent="true"
         android:visibility="gone">
 

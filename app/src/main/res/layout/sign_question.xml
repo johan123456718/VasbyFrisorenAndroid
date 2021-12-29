@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/signInLogo"
             android:layout_centerInParent="true"
-            android:text="@string/telefon_nummer"
+            android:text="@string/telefon_nr"
             android:layout_marginBottom="5dp"
             android:textColor="@color/eerie_black"
             app:backgroundTint="@color/platinum"

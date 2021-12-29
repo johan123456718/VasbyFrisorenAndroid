@@ -22,7 +22,7 @@
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/backbutton"
         android:fontFamily="@font/roboto_light"
-        android:text="@string/booking"
+        android:text="@string/myBooking"
         android:textColor="@color/white"
         android:textSize="25sp" />
 

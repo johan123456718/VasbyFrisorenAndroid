@@ -20,39 +20,37 @@
 
         <ImageView
             android:id="@+id/signInLogo"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:src="@drawable/logo" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_account"
-            android:textColor="@color/winter_white"
-            android:layout_below="@+id/signInLogo"
-            android:layout_centerInParent="true"
-            android:textSize="25sp"
-            />
-
 
         <LinearLayout
-            android:id="@+id/lol"
+            android:id="@+id/register_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/signInLogo"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/signInLogo"
+                android:layout_centerInParent="true"
+                android:text="@string/create_account"
+                android:textColor="@color/winter_white"
+                android:textSize="25sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/winter_white"
-                app:startIconDrawable="@drawable/person_selector"
-                app:startIconTint="@color/white"
                 android:theme="@style/EditTextHint"
-                >
+                app:startIconDrawable="@drawable/person_selector"
+                app:startIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstname_edittext"
@@ -60,11 +58,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/signInLogo"
                     android:layout_centerInParent="true"
-                    android:padding="5dp"
                     android:hint="@string/firstname"
+                    android:inputType="textEmailAddress"
+                    android:padding="5dp"
                     android:textColor="@color/white"
-                    app:backgroundTint="@android:color/transparent"
-                    android:inputType="textEmailAddress" />
+                    app:backgroundTint="@android:color/transparent" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,10 +70,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/winter_white"
-                app:startIconDrawable="@drawable/person_selector"
-                app:startIconTint="@color/white"
                 android:theme="@style/EditTextHint"
-                >
+                app:startIconDrawable="@drawable/person_selector"
+                app:startIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/secondname_edittext"
@@ -83,11 +80,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/signInLogo"
                     android:layout_centerInParent="true"
-                    android:padding="5dp"
                     android:hint="@string/secondname"
+                    android:inputType="textEmailAddress"
+                    android:padding="5dp"
                     android:textColor="@color/white"
-                    app:backgroundTint="@android:color/transparent"
-                    android:inputType="textEmailAddress" />
+                    app:backgroundTint="@android:color/transparent" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,10 +92,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/winter_white"
-                app:startIconDrawable="@drawable/email_icon"
-                app:startIconTint="@color/white"
                 android:theme="@style/EditTextHint"
-                >
+                app:startIconDrawable="@drawable/email_icon"
+                app:startIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_edittext"
@@ -106,63 +102,85 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/signInLogo"
                     android:layout_centerInParent="true"
-                    android:padding="5dp"
                     android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:padding="5dp"
                     android:textColor="@color/white"
+                    app:backgroundTint="@android:color/transparent" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/winter_white"
+                android:theme="@style/EditTextHint"
+                app:startIconDrawable="@drawable/contact2"
+                app:startIconTint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone_nr_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/signInLogo"
+                    android:layout_centerInParent="true"
+                    android:hint="@string/telefon_nr"
+                    android:inputType="phone"
+                    android:padding="5dp"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@android:color/transparent" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/winter_white"
+                android:theme="@style/EditTextHint"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/grey_white"
+                app:startIconDrawable="@drawable/lock_icon"
+                app:startIconTint="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_password_edittext"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/persian_orange"
+                    android:hint="@string/password2"
+                    android:inputType="textPassword"
+                    android:padding="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     app:backgroundTint="@android:color/transparent"
-                    android:inputType="textEmailAddress" />
+                    app:passwordToggleEnabled="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
                 android:textColorHint="@color/winter_white"
+                android:theme="@style/EditTextHint"
+                app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/grey_white"
                 app:startIconDrawable="@drawable/lock_icon"
-                app:startIconTint="@color/white"
-                android:theme="@style/EditTextHint">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_password_edittext"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:passwordToggleEnabled="true"
-                android:layout_centerInParent="true"
-                android:textColorHint="@color/white"
-                android:hint="@string/password2"
-                app:backgroundTint="@android:color/transparent"
-                android:inputType="textPassword"
-                android:textColor="@color/white"
-                android:background="@color/persian_orange"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-                android:textColorHint="@color/winter_white"
-                app:passwordToggleTint="@color/grey_white"
-                app:startIconDrawable="@drawable/lock_icon"
-                app:startIconTint="@color/white"
-                android:theme="@style/EditTextHint">
+                app:startIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email_confPass_edittext"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    app:passwordToggleEnabled="true"
                     android:layout_centerInParent="true"
-                    android:textColorHint="@color/white"
+                    android:background="@color/persian_orange"
                     android:hint="@string/confirmPass"
-                    app:backgroundTint="@android:color/transparent"
                     android:inputType="textPassword"
+                    android:padding="5dp"
                     android:textColor="@color/white"
-                    android:background="@color/persian_orange"/>
+                    android:textColorHint="@color/white"
+                    app:backgroundTint="@android:color/transparent"
+                    app:passwordToggleEnabled="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,12 +189,11 @@
                 android:id="@+id/email_register_button"
                 android:layout_width="280dp"
                 android:layout_height="40dp"
-                android:text="@string/registrera"
                 android:layout_marginTop="25dp"
+                android:background="@drawable/button_rounded_login"
+                android:text="@string/registrera"
                 android:textColor="@color/eerie_black"
-                app:backgroundTint="@color/platinum"
-                android:background="@drawable/button_rounded_login"/>
-
+                app:backgroundTint="@color/platinum" />
 
 
         </LinearLayout>
