@@ -55,6 +55,7 @@
     <string name="third_barber">Najwa llllll</string>
     <string name="my_booking">Mina bokningar</string>
     <string name="settings">Inställningar</string>
+    <string name="service_history">Tjänst historik</string>
 
     <string-array name="barbers">
         <item>@string/first_barber</item>

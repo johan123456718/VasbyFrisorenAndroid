@@ -421,6 +421,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                 String date = formatter.format(calendar.getSelectedDate().getTime());
                 BookedTime bookedTime = new BookedTime
                         .BookedTimeBuilder(LocalDate.now().toString(), timeSlotList.get(selectedItem).getTime())
+                        .week(calendar.getSelectedDate().get(Calendar.WEEK_OF_YEAR))
                         .bookedDate(date)
                         .bookedDay(Days.of(calendar.getSelectedDate().getTime().getDay()).name())
                         .year(calendar.getSelectedDate().getTime().getYear() + 1900)

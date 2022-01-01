@@ -2,7 +2,6 @@ package com.example.vasbyfrisorenandroid.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
+import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
 import com.example.vasbyfrisorenandroid.model.mybooking.MyBooking;
 import com.example.vasbyfrisorenandroid.model.mybooking.MyBookingAdapter;
+import com.example.vasbyfrisorenandroid.model.mybooking.OnMyBookingListener;
+import com.example.vasbyfrisorenandroid.model.service.Service;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyBookingsFragment extends Fragment {
+public class MyBookingsFragment extends Fragment implements OnMyBookingListener {
 
 
     private View rootView;
@@ -38,7 +42,6 @@ public class MyBookingsFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private LinearLayoutManager layoutManager;
-
     private TextView title;
     private LinearLayout underline;
 
@@ -47,7 +50,7 @@ public class MyBookingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.mybooking, container, false);
         title = rootView.findViewById(R.id.mybooking_title);
-        underline = rootView.findViewById(R.id.mybooking_underline);
+        underline = rootView.findViewById(R.id.pickedmybooking_underline);
         title.setVisibility(View.GONE);
         underline.setVisibility(View.GONE);
         myBookingList = new ArrayList<>();
@@ -79,6 +82,11 @@ public class MyBookingsFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if(myBookingList != null) {
@@ -95,6 +103,10 @@ public class MyBookingsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
+
+                    if(myBookingList != null){
+                        myBookingList.clear();
+                    }
                     for (DataSnapshot data : snapshot.getChildren()) {
 
                         MyBooking myBooking = data.getValue(MyBooking.class);
@@ -118,8 +130,47 @@ public class MyBookingsFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(rootView.getContext());
-        adapter = new MyBookingAdapter(myBookingList);
+        adapter = new MyBookingAdapter(myBookingList, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onServiceClick(View view, int position) {
+
+        DatabaseReference bookingDbReference = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("bookings")
+                .child(String.valueOf(position + 1))
+                .child("bookedTime")
+                .child("checked");
+
+        Service service = myBookingList.get(position).getService();
+        BookedTime bookedTime = myBookingList.get(position).getBookedTime();
+        String barber = myBookingList.get(position).getBarber();
+
+        bookingDbReference.setValue(true)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Fragment fragment = new PickedMyBookingFragment();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("service", service);
+                        bundle.putParcelable("bookedTime", bookedTime);
+                        bundle.putString("barber", barber);
+                        bundle.putInt("id", (position + 1));
+                        bundle.putInt("timeSlotIndex", position);
+                        fragment.setArguments(bundle);
+
+                        getActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                .replace(R.id.fragment_container, fragment)
+                                .commit();
+                    }
+                });
     }
 }
