@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:background="@drawable/notification_rounded_item"
-    android:padding="5dp"
+    android:padding="4dp"
     >
 
     <androidx.cardview.widget.CardView
@@ -63,10 +63,10 @@
         android:id="@+id/mybooking_new_item"
         android:layout_width="8dp"
         android:layout_height="8dp"
-        android:layout_alignParentEnd="true"
         android:layout_below="@+id/mybooking_description"
+        android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
-        android:textColor="@color/white"
-        android:background="@drawable/notification_rounded"/>
+        android:background="@drawable/notification_rounded"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

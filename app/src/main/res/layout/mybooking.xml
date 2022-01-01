@@ -8,22 +8,22 @@
         android:id="@+id/backbutton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="25dp"
         android:layout_marginStart="5dp"
-        android:src="@drawable/back_arrow"/>
+        android:layout_marginTop="25dp"
+        android:src="@drawable/back_arrow" />
 
     <TextView
         android:id="@+id/mybooking_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/mybooking_underline"
+        android:layout_above="@+id/pickedmybooking_underline"
         android:layout_centerInParent="true"
         android:text="@string/myBooking"
         android:textColor="@color/white"
         android:textSize="25sp" />
 
     <LinearLayout
-        android:id="@+id/mybooking_underline"
+        android:id="@+id/pickedmybooking_underline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:orientation="vertical"
@@ -41,11 +41,11 @@
 
         <ImageView
             android:id="@+id/empty_booking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/notification_empty"/>
+            android:src="@drawable/mybooking_empty" />
 
         <TextView
             android:id="@+id/mybooking_empty_title"
@@ -72,7 +72,7 @@
         android:id="@+id/existing_mybooking_div"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/mybooking_underline"
+        android:layout_below="@id/pickedmybooking_underline"
         android:layout_centerInParent="true"
         android:visibility="gone">
 
