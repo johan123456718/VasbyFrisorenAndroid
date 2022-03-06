@@ -1,13 +1,10 @@
 package com.example.vasbyfrisorenandroid.fragment;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,11 +18,8 @@ import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -92,7 +86,7 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
     private void initQRCode(){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            String encodedText = encode("points");
+            String encodedText = encode(selectedItemId + " " + FirebaseAuth.getInstance().getCurrentUser().getUid());
             BitMatrix matrix = writer.encode(encodedText,
                     BarcodeFormat.QR_CODE,
                     350,
@@ -108,15 +102,8 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
 
     private String encode(String str){
         Base64.Encoder encoder = Base64.getEncoder();
-        byte[] encoded = encoder.encode(str.getBytes(StandardCharsets.UTF_8));
-        return new String(encoded);
+        return encoder.encodeToString(str.getBytes(StandardCharsets.UTF_8));
     }
-
-    /*private String decode(String str){
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] decoded = decoder.decode(str);
-        return new String(decoded);
-    } //for later */
 
     @Override
     public void onClick(View v) {
