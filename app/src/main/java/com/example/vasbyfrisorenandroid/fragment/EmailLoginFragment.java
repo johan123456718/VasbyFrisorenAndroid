@@ -138,7 +138,7 @@ public class EmailLoginFragment extends Fragment implements View.OnClickListener
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        
+                        Toast.makeText(rootView.getContext(), "Ditt användarnamn eller lösenord är felaktigt", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

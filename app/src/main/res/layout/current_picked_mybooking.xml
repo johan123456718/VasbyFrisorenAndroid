@@ -18,7 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/pickedmybooking_underline"
-        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/backbutton"
+        android:fontFamily="@font/roboto_light"
         android:text="@string/service_history"
         android:textColor="@color/white"
         android:textSize="25sp" />

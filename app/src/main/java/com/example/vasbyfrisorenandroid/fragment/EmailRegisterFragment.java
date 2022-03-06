@@ -153,12 +153,21 @@ public class EmailRegisterFragment extends Fragment implements View.OnClickListe
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
 
-                                                                    Toast.makeText(rootView.getContext(), "Ditt konto skapades!", Toast.LENGTH_LONG).show();
-                                                                    getFragmentManager()
-                                                                            .beginTransaction()
-                                                                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                                                                            .replace(R.id.fragment_container, new EmailLoginFragment())
-                                                                            .addToBackStack(null).commit();
+                                                                    FirebaseDatabase.getInstance().getReference("Users")
+                                                                            .child(auth.getCurrentUser().getUid())
+                                                                            .child("points")
+                                                                            .setValue(0)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void unused) {
+                                                                                    Toast.makeText(rootView.getContext(), "Ditt konto skapades!", Toast.LENGTH_LONG).show();
+                                                                                    getFragmentManager()
+                                                                                            .beginTransaction()
+                                                                                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                                                                                            .replace(R.id.fragment_container, new EmailLoginFragment())
+                                                                                            .addToBackStack(null).commit();
+                                                                                }
+                                                                            });
                                                                 }
                                                             });
                                                 }
