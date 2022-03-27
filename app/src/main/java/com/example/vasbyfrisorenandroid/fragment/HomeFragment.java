@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -68,6 +69,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
     //Firebase
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private DatabaseReference dbServiceReference;
 
     @Nullable
     @Override
@@ -79,7 +81,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
         notificationBell = rootView.findViewById(R.id.notification_bell);
         rViewScrollButton = rootView.findViewById(R.id.recyclerViewScroll_button);
         notificationBadge = rootView.findViewById(R.id.notification_badge);
-
+        dbServiceReference = FirebaseDatabase.getInstance().getReference().child("Services");
         auth = FirebaseAuth.getInstance();
 
         initServiceRecyclerView();
@@ -112,30 +114,67 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
     }
 
     private void initServiceRecyclerView(){
-        serviceList = new ArrayList<>();
-        serviceList.add(new Service(R.drawable.klippning, "Klippning", 250));
-        serviceList.add(new Service(R.drawable.tvatt,"Line2", 250));
-        serviceList.add(new Service(R.drawable.skagg, "Line3", 250));
-        serviceList.add(new Service(R.drawable.nopp, "Line4", 250));
-        serviceList.add(new Service(R.drawable.logo, "Line5", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line6", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line7", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line8", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line9", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line10", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line11", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line12", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line13", 0));
-        serviceList.add(new Service(R.drawable.logo, "Line14", 0));
+        //If data doesn't exist
+        dbServiceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    serviceList = new ArrayList<>();
+                    serviceList.add(new Service(R.drawable.klippning, "Dam klippning inkl. konsultation, tvätt med lätt huvudmassage, fin föning samt styling", 420));
+                    serviceList.add(new Service(R.drawable.tvatt,"Dam klippning ”Pensionär”", 300));
+                    serviceList.add(new Service(R.drawable.skagg, "Herr klippning inkl. tvätt med lätt huvudmassage", 350));
+                    serviceList.add(new Service(R.drawable.nopp, "Herr klippning ”Pensionär”", 250));
+                    serviceList.add(new Service(R.drawable.logo, "Barnklippning 0-10 år", 250));
+                    serviceList.add(new Service(R.drawable.logo, "Ungdom 11-17år (Kille)", 290));
+                    serviceList.add(new Service(R.drawable.logo, "Ungdom 11-17år (Tjej)", 340));
+                    serviceList.add(new Service(R.drawable.logo, "Rakning huvud med maskin", 150));
+                    serviceList.add(new Service(R.drawable.logo, "Rakning huvud med kniv", 200));
+                    serviceList.add(new Service(R.drawable.logo, "Folieslingor", 1100));
+                    serviceList.add(new Service(R.drawable.logo, "Slingor i hätta", 950));
+                    serviceList.add(new Service(R.drawable.logo, "Hårfärg", 950));
+                    serviceList.add(new Service(R.drawable.logo, "Toning", 890));
+                    serviceList.add(new Service(R.drawable.logo, "Avfärgning", 890));
+                    serviceList.add(new Service(R.drawable.logo, "Ögonbrynsfärgning inkl. ögonbrynsplock", 350));
+                    serviceList.add(new Service(R.drawable.logo, "Ögonbrynsplockning", 200));
+                    serviceList.add(new Service(R.drawable.logo, "Fransfärgning", 180));
+                    serviceList.add(new Service(R.drawable.logo, "Tvätt & Fön", 300));
+                    serviceList.add(new Service(R.drawable.logo, "Lugg klippning", 100));
+                    serviceList.add(new Service(R.drawable.logo, "Hål tagning", 349));
+                    dbServiceReference.setValue(serviceList);
+                }
+            }
 
-        serviceRecyclerView = rootView.findViewById(R.id.recyclerView);
-        serviceRecyclerView.setNestedScrollingEnabled(false);
-        serviceLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        serviceRecyclerView.setLayoutManager(serviceLayoutManager);
-        serviceRecyclerView.setHasFixedSize(true);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        serviceAdapter = new ServiceAdapter(serviceList, this);
-        serviceRecyclerView.setAdapter(serviceAdapter);
+            }
+        });
+
+        //If data exist
+        dbServiceReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    serviceList = new ArrayList<>();
+
+                    for(DataSnapshot ds : snapshot.getChildren()) {
+                        serviceList.add(ds.getValue(Service.class));
+                        serviceRecyclerView = rootView.findViewById(R.id.recyclerView);
+                        serviceRecyclerView.setNestedScrollingEnabled(false);
+                        serviceLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                        serviceRecyclerView.setLayoutManager(serviceLayoutManager);
+                        serviceRecyclerView.setHasFixedSize(true);
+                        serviceAdapter = new ServiceAdapter(serviceList, HomeFragment.this);
+                        serviceRecyclerView.setAdapter(serviceAdapter);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void initProductRecyclerView(){

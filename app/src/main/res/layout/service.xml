@@ -39,11 +39,12 @@
                 android:layout_below="@+id/img"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:textSize="12sp"
                 android:fontFamily="@font/roboto_regular"
                 android:gravity="center"
+                android:maxWidth="350dp"
                 android:text="Loren ipsum"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/price"
@@ -55,7 +56,7 @@
                 android:gravity="center"
                 android:text="Loren ipsum"
                 android:textColor="@color/lightRed"
-                android:textSize="11sp" />
+                android:textSize="15sp" />
 
         </RelativeLayout>
 
