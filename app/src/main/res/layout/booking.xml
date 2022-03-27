@@ -106,7 +106,7 @@
             android:layout_toRightOf="@+id/barber_img"
             android:fontFamily="@font/roboto_regular"
             android:paddingLeft="10dp"
-            android:text="@string/first_barber"
+            android:text="Frisörens namn"
             android:textColor="@color/white" />
 
         <ImageView
