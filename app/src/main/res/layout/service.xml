@@ -3,63 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
-    android:padding="7dp"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/serviceCardView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="4dp"
-        app:cardMaxElevation="2dp"
+        app:cardBackgroundColor="@color/eerie_black"
+        app:cardCornerRadius="15dp"
         app:cardElevation="1dp"
-        app:cardBackgroundColor="@color/eerie_black2"
-        android:layout_centerInParent="true"
-        >
+        app:cardMaxElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/winter_white">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="5dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/rounded_image_background"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerVertical="true"
                 android:src="@drawable/ic_launcher_background"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="10dp" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/img"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/roboto_regular"
-                android:gravity="center"
-                android:maxWidth="350dp"
-                android:text="Loren ipsum"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
+            <View
+                android:id="@+id/verticalLine"
+                android:layout_width="1dp"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/img"
+                android:background="@color/winter_white" />
 
-            <TextView
-                android:id="@+id/price"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="@font/roboto_regular"
-                android:gravity="center"
-                android:text="Loren ipsum"
-                android:textColor="@color/lightRed"
-                android:textSize="15sp" />
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/verticalLine"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="3"
+                    android:text="Loren ipsum"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Loren ipsum"
+                    android:textColor="@color/grey_white"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

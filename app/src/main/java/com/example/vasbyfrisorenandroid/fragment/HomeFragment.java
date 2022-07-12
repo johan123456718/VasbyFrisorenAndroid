@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
@@ -27,7 +29,9 @@ import com.example.vasbyfrisorenandroid.model.product.ProductAdapter;
 import com.example.vasbyfrisorenandroid.model.service.OnServiceListener;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.service.ServiceAdapter;
+import com.example.vasbyfrisorenandroid.viewpager.SlidePagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,36 +44,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment implements View.OnClickListener, OnServiceListener {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private View rootView;
-
-    //Service
-    private List<Service> serviceList;
-    private RecyclerView serviceRecyclerView;
-    private RecyclerView.Adapter serviceAdapter;
-    private LinearLayoutManager serviceLayoutManager;
-
-    //Product
-    private List<Product> productList;
-    private RecyclerView productRecyclerView;
-    private RecyclerView.Adapter productAdapter;
-    private GridLayoutManager productLayoutManager;
 
     //Other
     private FloatingActionButton profileImg;
     private TextView loginText, notificationBadge;
-    private ImageView rViewScrollButton;
     private ImageButton contactUs, notificationBell;
 
     //Notification
-
     private int myBookingCount;
 
     //Firebase
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private DatabaseReference dbServiceReference;
+
+    //ViewPager
+    private ViewPager pager;
+    private PagerAdapter pagerAdapter;
 
     @Nullable
     @Override
@@ -79,25 +72,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
         profileImg = rootView.findViewById(R.id.profile_img_btn);
         loginText = rootView.findViewById(R.id.login_text);
         notificationBell = rootView.findViewById(R.id.notification_bell);
-        rViewScrollButton = rootView.findViewById(R.id.recyclerViewScroll_button);
+        CreatePageView();
         notificationBadge = rootView.findViewById(R.id.notification_badge);
-        dbServiceReference = FirebaseDatabase.getInstance().getReference().child("Services");
         auth = FirebaseAuth.getInstance();
-
-        initServiceRecyclerView();
-        initProductRecyclerView();
         return rootView;
+    }
+
+    private void CreatePageView() {
+        pager = rootView.findViewById(R.id.pager);
+        List<Fragment> list = new ArrayList<>();
+        list.add(new ServicePageFragment());
+        list.add(new ProductPageFragment());
+        pagerAdapter = new SlidePagerAdapter(getActivity().getSupportFragmentManager(), list);
+        pager.setAdapter(pagerAdapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         user = auth.getCurrentUser();
-        
-        if(user != null){
+
+        if (user != null) {
             loginText.setText(user.getDisplayName());
             initNotificationCount();
-        }else{
+            CreatePageView();
+        } else {
             FirebaseAuth.getInstance().signOut();
         }
 
@@ -105,102 +104,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
         profileImg.setOnClickListener(this);
         loginText.setOnClickListener(this);
         notificationBell.setOnClickListener(this);
-        rViewScrollButton.setOnClickListener(this);
     }
 
     public void onDestroy() {
         super.onDestroy();
-        serviceList.clear();
-    }
-
-    private void initServiceRecyclerView(){
-        //If data doesn't exist
-        dbServiceReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()){
-                    serviceList = new ArrayList<>();
-                    serviceList.add(new Service(R.drawable.klippning, "Dam klippning inkl. konsultation, tvätt med lätt huvudmassage, fin föning samt styling", 420));
-                    serviceList.add(new Service(R.drawable.tvatt,"Dam klippning ”Pensionär”", 300));
-                    serviceList.add(new Service(R.drawable.skagg, "Herr klippning inkl. tvätt med lätt huvudmassage", 350));
-                    serviceList.add(new Service(R.drawable.nopp, "Herr klippning ”Pensionär”", 250));
-                    serviceList.add(new Service(R.drawable.logo, "Barnklippning 0-10 år", 250));
-                    serviceList.add(new Service(R.drawable.logo, "Ungdom 11-17år (Kille)", 290));
-                    serviceList.add(new Service(R.drawable.logo, "Ungdom 11-17år (Tjej)", 340));
-                    serviceList.add(new Service(R.drawable.logo, "Rakning huvud med maskin", 150));
-                    serviceList.add(new Service(R.drawable.logo, "Rakning huvud med kniv", 200));
-                    serviceList.add(new Service(R.drawable.logo, "Folieslingor", 1100));
-                    serviceList.add(new Service(R.drawable.logo, "Slingor i hätta", 950));
-                    serviceList.add(new Service(R.drawable.logo, "Hårfärg", 950));
-                    serviceList.add(new Service(R.drawable.logo, "Toning", 890));
-                    serviceList.add(new Service(R.drawable.logo, "Avfärgning", 890));
-                    serviceList.add(new Service(R.drawable.logo, "Ögonbrynsfärgning inkl. ögonbrynsplock", 350));
-                    serviceList.add(new Service(R.drawable.logo, "Ögonbrynsplockning", 200));
-                    serviceList.add(new Service(R.drawable.logo, "Fransfärgning", 180));
-                    serviceList.add(new Service(R.drawable.logo, "Tvätt & Fön", 300));
-                    serviceList.add(new Service(R.drawable.logo, "Lugg klippning", 100));
-                    serviceList.add(new Service(R.drawable.logo, "Hål tagning", 349));
-                    dbServiceReference.setValue(serviceList);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        //If data exist
-        dbServiceReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    serviceList = new ArrayList<>();
-
-                    for(DataSnapshot ds : snapshot.getChildren()) {
-                        serviceList.add(ds.getValue(Service.class));
-                        serviceRecyclerView = rootView.findViewById(R.id.recyclerView);
-                        serviceRecyclerView.setNestedScrollingEnabled(false);
-                        serviceLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                        serviceRecyclerView.setLayoutManager(serviceLayoutManager);
-                        serviceRecyclerView.setHasFixedSize(true);
-                        serviceAdapter = new ServiceAdapter(serviceList, HomeFragment.this);
-                        serviceRecyclerView.setAdapter(serviceAdapter);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void initProductRecyclerView(){
-
-        productList = new ArrayList<>();
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-        productList.add(new Product(R.drawable.logo, "Schampo", 230));
-
-        productRecyclerView = rootView.findViewById(R.id.recyclerView2);
-        productRecyclerView.setHasFixedSize(true);
-        productLayoutManager = new GridLayoutManager(getContext(), 3);
-        productAdapter = new ProductAdapter(productList);
-
-        productRecyclerView.setLayoutManager(productLayoutManager);
-        productRecyclerView.setAdapter(productAdapter);
-        productRecyclerView.addItemDecoration(new SpacesItemDecoration(30));
+        pager.clearOnPageChangeListeners();
     }
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = null;
-        switch(v.getId()) {
+        Fragment fragment;
+        switch (v.getId()) {
 
             case R.id.contact_us:
                 Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -210,14 +124,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
 
             case R.id.profile_img_btn:
 
-                if(user != null) {
+                if (user != null) {
                     fragment = new ProfileFragment();
 
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
                             .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-                }else{
+                } else {
                     fragment = new EmailLoginFragment();
 
                     getFragmentManager()
@@ -230,13 +144,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
             case R.id.login_text:
                 FirebaseUser user = auth.getCurrentUser();
 
-                if(user == null) {
+                if (user == null) {
                     fragment = new EmailLoginFragment();
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
                             .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-                }else{
+                } else {
                     fragment = new ProfileFragment();
                     getFragmentManager()
                             .beginTransaction()
@@ -257,18 +171,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
                         .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
                         .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
                 break;
-
-            case R.id.recyclerViewScroll_button:
-
-                if (serviceRecyclerView.canScrollVertically(1)) { //-1 up, 1 down
-                    serviceRecyclerView.smoothScrollToPosition(serviceLayoutManager.findFirstVisibleItemPosition() + 4);
-                }
-                //notification_nr++;
-                break;
         }
     }
 
-    private void initNotificationCount(){
+    private void initNotificationCount() {
 
         FirebaseDatabase.getInstance()
                 .getReference("Users")
@@ -278,7 +184,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 myBookingCount = (int) snapshot.getChildrenCount();
-                if(myBookingCount > 0)
+                if (myBookingCount > 0)
                     notificationBadge.setText(String.valueOf(myBookingCount));
                 else
                     notificationBadge.setVisibility(View.GONE);
@@ -289,23 +195,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnSe
 
             }
         });
-    }
-
-    @Override
-    public void onServiceClick(View v, int position) {
-
-        AppCompatActivity activity = (AppCompatActivity) v.getContext();
-
-        Fragment fragment = new BookingFragment();
-        Service service = serviceList.get(position);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("service", service);
-        fragment.setArguments(bundle);
-
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
     }
 }

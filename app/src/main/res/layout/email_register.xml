@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/winter_white"
                 android:theme="@style/EditTextHint"
-                app:startIconDrawable="@drawable/contact2"
+                app:startIconDrawable="@drawable/contact"
                 app:startIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText

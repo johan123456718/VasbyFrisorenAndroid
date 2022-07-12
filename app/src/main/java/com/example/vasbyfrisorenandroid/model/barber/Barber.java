@@ -20,4 +20,12 @@ public class Barber {
     public boolean isAvailable() {
         return available;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 }

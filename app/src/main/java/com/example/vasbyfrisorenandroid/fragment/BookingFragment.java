@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
@@ -74,8 +79,8 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private AppCompatButton bookButton;
     private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
     private int id, selectedItem;
-    private ImageView barberSpinner, barberImg;
-
+    private ImageView barberImg, backButton;
+    private RelativeLayout barberBox;
 
     private static final int NOTIFICATION_ID = 1;
     private NotificationManagerCompat notificationManager;
@@ -91,53 +96,40 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
         bookButton = rootView.findViewById(R.id.book_button);
         barberName = rootView.findViewById(R.id.barber_name);
-        barberSpinner = rootView.findViewById(R.id.spinner_drop_button);
+        barberBox = rootView.findViewById(R.id.barber_box);
         notificationManager = NotificationManagerCompat.from(rootView.getContext());
         barberImg = rootView.findViewById(R.id.barber_img);
+        backButton = rootView.findViewById(R.id.backbutton);
         dbBarbersReference = FirebaseDatabase.getInstance().getReference().child("Barbers");
+        timeSlotList = new ArrayList<>();
 
         initCalendar();
         dbTimeSlotReference = FirebaseDatabase.getInstance().getReference().child("Timeslot");
 
-        //check if bugs turn up
-        dbTimeSlotReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-
-                    Calendar c = Calendar.getInstance();
-                    int day = c.get(Calendar.WEEK_OF_YEAR);
-                    c.add(Calendar.WEEK_OF_YEAR, 2);
-                    int lastCallDate = c.get(Calendar.WEEK_OF_YEAR);
-
-                    if (day == lastCallDate) {
-
+        if(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) == 1){
+            resetTimeSlot();
+            dbTimeSlotReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
                         String[] barbers = rootView.getContext().getResources().getStringArray(R.array.barbers);
                         for (String barber : barbers) {
                             initTimeSlotFirebase(barber);
                         }
                     }
-
-                } else {
-                    String[] barbers = rootView.getContext().getResources().getStringArray(R.array.barbers);
-                    for (String barber : barbers) {
-                        initTimeSlotFirebase(barber);
-                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-        //
+                }
+            });
+        }
 
-        timeSlotList = new ArrayList<>();
         //for getting current data
         dbTimeSlotReference.child(barberName.getText().toString())
                 .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
-                .child(Days.of(Calendar.getInstance().getTime().getDay()).name())
+                .child(Objects.requireNonNull(Days.of(Calendar.getInstance().getTime().getDay())).name())
                 .addValueEventListener(new ValueEventListener() {
 
                     @Override
@@ -152,7 +144,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                             }
                         }
                         initTimeSlot();
-                        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(30));
+                        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(40));
                     }
 
                     @Override
@@ -166,13 +158,33 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
             service = bundle.getParcelable("service");
             selectedServiceTitle.setText(service.getServiceTitle());
             selectedServiceImg.setImageResource(service.getImgResource());
-            selectedServicePrice.setText("Totalt: " + String.valueOf(service.getPrice()) + "kr");
-            dbBookingReference = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bookings");
+            selectedServicePrice.setText("Totalt: " + service.getPrice() + "kr");
+            dbBookingReference = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("Users")
+                    .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                    .child("bookings");
             initId();
         }
         createNotificationChannel();
         createNotification();
         return rootView;
+    }
+
+    private void resetTimeSlot() {
+        dbTimeSlotReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data: snapshot.getChildren()) {
+                    data.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -186,7 +198,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                 dbTimeSlotReference
                         .child(barberName.getText().toString())
                         .child(String.valueOf(date.get(Calendar.WEEK_OF_YEAR)))
-                        .child(Days.of(date.getTime().getDay()).name())
+                        .child(Objects.requireNonNull(Days.of(date.getTime().getDay())).name())
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,9 +223,35 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                         });
             }
         });
+
+        dbBarbersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Barber barber = data.getValue(Barber.class);
+                        if (barber != null) {
+                            if (barber.isAvailable()) {
+                                barberName.setText(barber.getName());
+                                updateTimeSlot();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         calendar.refresh();
         bookButton.setOnClickListener(this);
-        barberSpinner.setOnClickListener(this);
+        barberBox.setOnClickListener(this);
+        backButton.setOnClickListener(this);
     }
 
     @Override
@@ -243,31 +281,50 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                 .build();
     }
 
+
+    private void InitBarbers() {
+        String[] barbers = rootView.getContext().getResources().getStringArray(R.array.barbers);
+        for (String barberName : barbers) {
+            dbBarbersReference.child(barberName).setValue(new Barber(barberName, true));
+        }
+    }
+
     private void initTimeSlotFirebase(String barber) {
         List<TimeSlot> result;
         Calendar calendar = Calendar.getInstance();
-        int nrOfWeeksForward = 3;
+        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        int weeks = 52;
 
-        for (int i = 0; i < nrOfWeeksForward; i++) {
-
-            int day = calendar.get(Calendar.DAY_OF_WEEK);
+        for (int i = currentWeek; i < weeks; i++) {
+            int daySelect = calendar.get(Calendar.DAY_OF_WEEK);
             int lastCallDate = Days.MONDAY.getDay();
 
-            if (day == lastCallDate) {
+            if (daySelect == lastCallDate) {
                 for (int j = 1; j < 6; j++) { //from monday to friday
                     result = getWeekDaysTimeSet();
-                    dbTimeSlotReference.child(barber).child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))).child(Days.of(j).name()).setValue(result);
+                    dbTimeSlotReference.child(barber)
+                            .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
+                            .child(Objects.requireNonNull(Days.of(j)).name())
+                            .setValue(result);
                 }
             } else {
-                for (int j = day - 1; j < 6; j++) { //from the day we are now to friday
+                for (int j = daySelect - 1; j < 6; j++) { //from the daySelect we are now to friday
                     result = getWeekDaysTimeSet();
-                    dbTimeSlotReference.child(barber).child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))).child(Days.of(j).name()).setValue(result);
+                    dbTimeSlotReference.child(barber)
+                            .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
+                            .child(Objects.requireNonNull(Days.of(j)).name())
+                            .setValue(result);
                 }
             }
 
-            result = getWeekEndTimeSet();
-            dbTimeSlotReference.child(barber).child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))).child(Days.of(0).name()).setValue(result); //Sunday
-            dbTimeSlotReference.child(barber).child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))).child(Days.of(6).name()).setValue(result); //Saturday
+            dbTimeSlotReference.child(barber)
+                    .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
+                    .child(Objects.requireNonNull(Days.of(0)).name())
+                    .setValue(getWeekEndTimeSet(DayOfWeek.SUNDAY)); //Sunday
+            dbTimeSlotReference.child(barber)
+                    .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
+                    .child(Objects.requireNonNull(Days.of(6)).name())
+                    .setValue(getWeekEndTimeSet(DayOfWeek.SATURDAY)); //Saturday
             calendar.add(Calendar.WEEK_OF_YEAR, 1); //add up one week toward
             calendar.set(Calendar.DAY_OF_WEEK, 1); //starts from monday
         }
@@ -278,7 +335,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         timeSlotRecyclerView.setHasFixedSize(true);
         timeSlotAdapter = new TimeAdapter(timeSlotList, this);
 
-        timeSlotLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        timeSlotLayoutManager = new GridLayoutManager(getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
         timeSlotRecyclerView.setLayoutManager(timeSlotLayoutManager);
         timeSlotRecyclerView.setAdapter(timeSlotAdapter);
         timeSlotAdapter.notifyDataSetChanged();
@@ -302,7 +359,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         day = date24Format.format(date);
         result.add(0, new TimeSlot(day, true));
 
-        for (int i = 1; i < 18; i++) {
+        for (int i = 1; i < 19; i++) {
 
             // add 15 minutes to the current time; the hour adjusts automatically!
             calendar.add(Calendar.MINUTE, 30);
@@ -314,33 +371,46 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         return result;
     }
 
-    private List<TimeSlot> getWeekEndTimeSet() {
+    private List<TimeSlot> getWeekEndTimeSet(DayOfWeek dayOfWeek) {
         List<TimeSlot> result = new ArrayList<>();
-
         SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
-
         Calendar calendar = Calendar.getInstance();
-
         Date date;
-
         String day;
 
-        calendar.set(Calendar.HOUR_OF_DAY, 11);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        date = calendar.getTime();
-        day = date24Format.format(date);
-        result.add(0, new TimeSlot(day, true));
+        if(dayOfWeek == DayOfWeek.SUNDAY) {
+            calendar.set(Calendar.HOUR_OF_DAY, 11);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            date = calendar.getTime();
+            day = date24Format.format(date);
+            result.add(0, new TimeSlot(day, true));
 
-        for (int i = 1; i < 14; i++) {
+            for (int i = 1; i < 15; i++) {
 
-            // add 15 minutes to the current time; the hour adjusts automatically!
-            calendar.add(Calendar.MINUTE, 30);
-            day = date24Format.format(calendar.getTime());
+                // add 15 minutes to the current time; the hour adjusts automatically!
+                calendar.add(Calendar.MINUTE, 30);
+                day = date24Format.format(calendar.getTime());
 
-            result.add(new TimeSlot(day, true));
+                result.add(new TimeSlot(day, true));
+            }
+        }else if(dayOfWeek == DayOfWeek.SATURDAY){
+            calendar.set(Calendar.HOUR_OF_DAY, 10);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            date = calendar.getTime();
+            day = date24Format.format(date);
+            result.add(0, new TimeSlot(day, true));
+
+            for (int i = 1; i < 17; i++) {
+
+                // add 15 minutes to the current time; the hour adjusts automatically!
+                calendar.add(Calendar.MINUTE, 30);
+                day = date24Format.format(calendar.getTime());
+
+                result.add(new TimeSlot(day, true));
+            }
         }
-
         return result;
     }
 
@@ -369,7 +439,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
             NotificationChannel channel = new NotificationChannel("notification", name, important);
             channel.setDescription(description);
 
-            NotificationManager manager = (NotificationManager) getActivity().getSystemService(NotificationManager.class);
+            NotificationManager manager = getActivity().getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
@@ -382,7 +452,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         PendingIntent pendingIntent = PendingIntent.getActivity(rootView.getContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        notificationBuilder = new NotificationCompat.Builder(getActivity(), "notification")
+        notificationBuilder = new NotificationCompat.Builder(requireActivity(), "notification")
                 .setSmallIcon(R.drawable.logo)
                 .setContentTitle("Bokningstid")
                 .setContentText("Din bokning gick igenom")
@@ -401,7 +471,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.spinner_drop_button:
+            case R.id.barber_box:
                 showPopUp(v);
                 break;
 
@@ -435,20 +505,21 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                                 .replace(R.id.fragment_container, fragment)
                                 .commit();
 
-                        dbTimeSlotReference
-                                .child(barberName.getText().toString()) //barber
-                                .child(String.valueOf(calendar.getSelectedDate().get(Calendar.WEEK_OF_YEAR))) //week of year
-                                .child(Days.of(calendar.getSelectedDate().getTime().getDay()).name()) //day
-                                .child(String.valueOf(selectedItem)) //date
-                                .child("available") //bool variable
-                                .setValue(false);
+                        updateTimeFromTimeSlot();
 
                         Toast.makeText(v.getContext(), "Bokningen lyckades!", Toast.LENGTH_SHORT).show();
                         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
                     }
                 });
-
                 break;
+            case R.id.backbutton:
+                Fragment fragment = new HomeFragment();
+                getFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                        .replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                break;
+
         }
     }
 
@@ -467,120 +538,34 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
 
                 PopupMenu popupMenu = new PopupMenu(rootView.getContext(), v);
                 popupMenu.inflate(R.menu.popup_menu);
+                popupMenu.setGravity(Gravity.END);
 
                 removeBarbersThatAreNotAvailable(barbersStatus, popupMenu);
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
 
-                        switch (menuItem.getItemId()) {
+                    switch (menuItem.getItemId()) {
 
-                            case R.id.barber1:
-                                barberName.setText(R.string.first_barber);
-                                barberImg.setImageResource(R.drawable.profile_img_test);
-                                timeSlotList.clear();
-                                dbTimeSlotReference.child(barberName.getText().toString())
-                                        .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
-                                        .child(Days.of(Calendar.getInstance().getTime().getDay()).name())
-                                        .addValueEventListener(new ValueEventListener() {
+                        case R.id.barber1:
+                            barberName.setText(R.string.first_barber);
+                            barberImg.setImageResource(R.drawable.profile_img_test);
+                            updateTimeSlot();
+                            return true;
 
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        case R.id.barber2:
+                            barberName.setText(R.string.second_barber);
+                            barberImg.setImageResource(R.drawable.app_icon);
+                            updateTimeSlot();
+                            return true;
 
-                                                if (!timeSlotList.isEmpty())
-                                                    timeSlotList.clear();
+                        case R.id.barber3:
+                            barberName.setText(R.string.third_barber);
+                            barberImg.setImageResource(R.drawable.logo);
+                            updateTimeSlot();
+                            return true;
 
-                                                for (DataSnapshot data : snapshot.getChildren()) {
-
-                                                    TimeSlot timeSlot = data.getValue(TimeSlot.class);
-
-                                                    if (timeSlot != null) {
-                                                        timeSlotList.add(timeSlot);
-                                                    }
-                                                }
-                                                initTimeSlot();
-                                                calendar.goToday(true);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                return true;
-
-                            case R.id.barber2:
-                                barberName.setText(R.string.second_barber);
-                                barberImg.setImageResource(R.drawable.app_icon);
-                                timeSlotList.clear();
-                                dbTimeSlotReference.child(barberName.getText().toString())
-                                        .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
-                                        .child(Days.of(Calendar.getInstance().getTime().getDay()).name())
-                                        .addValueEventListener(new ValueEventListener() {
-
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                                if (!timeSlotList.isEmpty())
-                                                    timeSlotList.clear();
-
-                                                for (DataSnapshot data : snapshot.getChildren()) {
-
-                                                    TimeSlot timeSlot = data.getValue(TimeSlot.class);
-
-                                                    if (timeSlot != null) {
-                                                        timeSlotList.add(timeSlot);
-                                                    }
-                                                }
-                                                initTimeSlot();
-                                                calendar.goToday(true);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                return true;
-
-                            case R.id.barber3:
-                                barberName.setText(R.string.third_barber);
-                                barberImg.setImageResource(R.drawable.logo);
-                                timeSlotList.clear();
-                                dbTimeSlotReference.child(barberName.getText().toString())
-                                        .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
-                                        .child(Days.of(Calendar.getInstance().getTime().getDay()).name())
-                                        .addValueEventListener(new ValueEventListener() {
-
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                                if (!timeSlotList.isEmpty())
-                                                    timeSlotList.clear();
-
-                                                for (DataSnapshot data : snapshot.getChildren()) {
-
-                                                    TimeSlot timeSlot = data.getValue(TimeSlot.class);
-
-                                                    if (timeSlot != null) {
-                                                        timeSlotList.add(timeSlot);
-                                                    }
-                                                }
-                                                initTimeSlot();
-                                                calendar.goToday(true);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                return true;
-
-                            default:
-                                return false;
-                        }
+                        default:
+                            return false;
                     }
                 });
                 popupMenu.show();
@@ -593,11 +578,11 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         });
     }
 
-    private void addBarbersStatus(Map<String, Boolean> barbersStatus, DataSnapshot snapshot){
+    private void addBarbersStatus(Map<String, Boolean> barbersStatus, DataSnapshot snapshot) {
         for (DataSnapshot barber : snapshot.getChildren()) {
             Barber b = barber.getValue(Barber.class);
 
-            if(b != null) {
+            if (b != null) {
                 barbersStatus.put(b.getName(), b.isAvailable());
             }
         }
@@ -606,8 +591,50 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private void removeBarbersThatAreNotAvailable(Map<String, Boolean> barbersStatus, PopupMenu popupMenu) {
         for (int i = 0; i < popupMenu.getMenu().size(); i++) {
             if (!barbersStatus.get(popupMenu.getMenu().getItem(i).getTitle())) {
-                popupMenu.getMenu().getItem(i).setVisible(false); //Gör att texten är gråfärgad
+                popupMenu.getMenu().getItem(i).setEnabled(false); //Gör att texten är gråfärgad
             }
         }
+    }
+
+    private void updateTimeSlot() {
+        timeSlotList.clear();
+        dbTimeSlotReference.child(barberName.getText().toString())
+                .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
+                .child(Objects.requireNonNull(Days.of(Calendar.getInstance().getTime().getDay())).name())
+                .addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+
+                        if (!timeSlotList.isEmpty())
+                            timeSlotList.clear();
+
+                        for (DataSnapshot data : snapshot1.getChildren()) {
+
+                            TimeSlot timeSlot = data.getValue(TimeSlot.class);
+
+                            if (timeSlot != null) {
+                                timeSlotList.add(timeSlot);
+                            }
+                        }
+                        initTimeSlot();
+                        calendar.goToday(true);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void updateTimeFromTimeSlot() {
+        dbTimeSlotReference
+                .child(barberName.getText().toString()) //barber
+                .child(String.valueOf(calendar.getSelectedDate().get(Calendar.WEEK_OF_YEAR))) //week of year
+                .child(Objects.requireNonNull(Days.of(calendar.getSelectedDate().getTime().getDay())).name()) //day
+                .child(String.valueOf(selectedItem)) //date
+                .child("available") //bool variable
+                .setValue(false);
     }
 }

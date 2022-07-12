@@ -41,4 +41,16 @@
         <item name="android:textColor">@color/grey</item>
     </style>
 
+    <style name="ThemeOverlay.SearchView" parent="">
+
+        <item name="android:editTextColor">@color/eerie_black2</item>
+        <item name="android:textColorHint">@color/winter_white</item>
+        <item name="android:tint">@color/winter_white</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
+
 </resources>
