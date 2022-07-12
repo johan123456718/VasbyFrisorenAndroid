@@ -56,6 +56,12 @@
     <string name="my_booking">Mina bokningar</string>
     <string name="settings">Inställningar</string>
     <string name="service_history">Tjänst historik</string>
+    <string name="produkter_hint">Sök efter produkter</string>
+    <string name="settings_hint">Sök efter inställningar</string>
+    <string name="time_slot_information">Notera att tiden ovan kommer att justeras beronde på frisör</string>
+    <string name="my_profile">Min profil</string>
+    <string name="no">Nej</string>
+    <string name="yes">Ja</string>
 
     <string-array name="barbers">
         <item>@string/first_barber</item>

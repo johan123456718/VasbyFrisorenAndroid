@@ -13,12 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
-import com.example.vasbyfrisorenandroid.fragment.CustomDialog;
 import com.example.vasbyfrisorenandroid.fragment.HomeFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -26,23 +23,31 @@ import java.util.List;
 public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> {
 
     private List<Setting> settingList;
-
-    public static class SettingViewHolder extends RecyclerView.ViewHolder{
+    private OnSettingListener onSettingListener;
+    public static class SettingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView img;
         private TextView typeOfSetting, description;
+        private OnSettingListener onSettingListener;
 
-        public SettingViewHolder(@NonNull View itemView) {
+        public SettingViewHolder(@NonNull View itemView, OnSettingListener onSettingListener) {
             super(itemView);
             img = itemView.findViewById(R.id.settingImg);
             typeOfSetting = itemView.findViewById(R.id.typeOfSetting);
             description = itemView.findViewById(R.id.setting_description);
+            this.onSettingListener = onSettingListener;
+            itemView.setOnClickListener(this);
+        }
+        @Override
+        public void onClick(View v) {
+            onSettingListener.onSettingClick(v, getAdapterPosition());
         }
     }
 
 
-    public SettingAdapter(List<Setting> settingList){
+    public SettingAdapter(List<Setting> settingList, OnSettingListener onSettingListener){
         this.settingList = settingList;
+        this.onSettingListener = onSettingListener;
     }
 
 
@@ -50,7 +55,7 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
     @Override
     public SettingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.setting, parent, false);
-        SettingViewHolder settingViewHolder = new SettingViewHolder(view);
+        SettingViewHolder settingViewHolder = new SettingViewHolder(view, onSettingListener);
         return settingViewHolder;
     }
 
@@ -61,24 +66,21 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         holder.typeOfSetting.setText(setting.getTypeOfSetting());
         holder.description.setText(setting.getDescription());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        /*holder.itemView.setOnClickListener(view -> {
 
-                switch(setting.getTypeOfSetting()){
+            switch(setting.getTypeOfSetting()){
 
-                    case "Email":
-                        CustomDialog dialog = new CustomDialog();
-                        dialog.show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "Lololo");
-                    break;
+                case "Email":
+                    CustomDialog dialog = new CustomDialog();
+                    dialog.show(((AppCompatActivity)view.getContext()).getSupportFragmentManager(), "Lololo");
+                break;
 
-                    case "Logga ut":
-                        signOut(view);
-                    break;
+                case "Logga ut":
+                    signOut(view);
+                break;
 
-                }
             }
-        });
+        });*/
     }
 
     @Override
@@ -90,14 +92,11 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         FirebaseAuth.getInstance().signOut();
 
         GoogleSignIn.getClient(view.getContext(), GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(view.getContext(), "Logged out", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                .signOut().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(view.getContext(), "Logged out", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         ((AppCompatActivity)view.getContext()).getSupportFragmentManager()
                 .beginTransaction()
