@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +56,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -71,12 +69,9 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private View rootView;
     private HorizontalCalendar calendar;
     private RecyclerView timeSlotRecyclerView;
-    private RecyclerView.Adapter timeSlotAdapter;
-    private LinearLayoutManager timeSlotLayoutManager;
     private List<TimeSlot> timeSlotList;
     private Service service;
-    private TextView selectedServiceTitle, selectedServicePrice, barberName;
-    private CircleImageView selectedServiceImg;
+    private TextView barberName;
     private AppCompatButton bookButton;
     private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
     private int id, selectedItem;
@@ -97,6 +92,9 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         selectedServiceTitle = rootView.findViewById(R.id.selected_service_title);
         selectedServiceImg = rootView.findViewById(R.id.selected_service_img);
         selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
+        TextView selectedServiceTitle = rootView.findViewById(R.id.selected_service_title);
+        CircleImageView selectedServiceImg = rootView.findViewById(R.id.selected_service_img);
+        TextView selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
         bookButton = rootView.findViewById(R.id.book_button);
         barberName = rootView.findViewById(R.id.barber_name);
         barberBox = rootView.findViewById(R.id.barber_box);
@@ -105,7 +103,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         backButton = rootView.findViewById(R.id.backbutton);
         dbBarbersReference = FirebaseDatabase.getInstance().getReference().child("Barbers");
         timeSlotList = new ArrayList<>();
-
+        //InitBarbers();
         initCalendar();
         dbTimeSlotReference = FirebaseDatabase.getInstance().getReference().child("Timeslot");
 
@@ -263,9 +261,9 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private void initTimeSlot() {
         timeSlotRecyclerView = rootView.findViewById(R.id.recyclerView);
         timeSlotRecyclerView.setHasFixedSize(true);
-        timeSlotAdapter = new TimeAdapter(timeSlotList, this);
+        RecyclerView.Adapter timeSlotAdapter = new TimeAdapter(timeSlotList, this);
 
-        timeSlotLayoutManager = new GridLayoutManager(getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager timeSlotLayoutManager = new GridLayoutManager(getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
         timeSlotRecyclerView.setLayoutManager(timeSlotLayoutManager);
         timeSlotRecyclerView.setAdapter(timeSlotAdapter);
         timeSlotAdapter.notifyDataSetChanged();
@@ -351,7 +349,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
                 serviceInfo.put("bookedTime", bookedTime);
                 serviceInfo.put("barber", barberName.getText());
 
-                dbBookingReference.child(String.valueOf(id + 1)).setValue(serviceInfo, new DatabaseReference.CompletionListener() {
+                dbBookingReference.child(String.valueOf(id)).setValue(serviceInfo, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         HomeFragment fragment = new HomeFragment();
