@@ -89,9 +89,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.booking, container, false);
         db = new Database();
-        selectedServiceTitle = rootView.findViewById(R.id.selected_service_title);
-        selectedServiceImg = rootView.findViewById(R.id.selected_service_img);
-        selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
         TextView selectedServiceTitle = rootView.findViewById(R.id.selected_service_title);
         CircleImageView selectedServiceImg = rootView.findViewById(R.id.selected_service_img);
         TextView selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
