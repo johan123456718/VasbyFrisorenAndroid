@@ -50,9 +50,9 @@
     <string name="confirm_book">BOKA</string>
     <string name="extra_service">Extra service</string>
 
-    <string name="first_barber">George Challita</string>
-    <string name="second_barber">Salim Georgos</string>
-    <string name="third_barber">Najwa Daoud</string>
+    <string name="first_barber">George</string>
+    <string name="second_barber">Salim</string>
+    <string name="third_barber">Najwa</string>
     <string name="my_booking">Mina bokningar</string>
     <string name="settings">Inställningar</string>
     <string name="service_history">Tjänst historik</string>
