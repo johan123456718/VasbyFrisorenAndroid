@@ -43,7 +43,7 @@ public class PhoneLoginFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Fragment fragment = null;
+        Fragment fragment;
 
         switch (v.getId()){
 

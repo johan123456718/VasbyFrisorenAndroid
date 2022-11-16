@@ -22,8 +22,6 @@ import com.example.vasbyfrisorenandroid.model.mybooking.MyBooking;
 import com.example.vasbyfrisorenandroid.model.mybooking.MyBookingAdapter;
 import com.example.vasbyfrisorenandroid.model.mybooking.OnMyBookingListener;
 import com.example.vasbyfrisorenandroid.model.service.Service;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +48,7 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.empty_booking, container, false);
+        rootView = inflater.inflate(R.layout.empty_booking, container, false); // Will show empty_mybooking_div from the beginning
         title = rootView.findViewById(R.id.mybooking_title);
         underline = rootView.findViewById(R.id.pickedmybooking_underline);
         backButton = rootView.findViewById(R.id.backbutton);
@@ -61,27 +59,31 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
         Bundle b = getArguments();
         int notifications;
 
-        if(b != null){
+        if (b != null) {
             notifications = b.getInt("bookingCount");
-
-            if(notifications > 0){
-                existing_mybooking_div = rootView.findViewById(R.id.existing_mybooking_div);
-                empty_mybooking_div = rootView.findViewById(R.id.empty_mybooking_div);
-
-                if(existing_mybooking_div.getVisibility() == View.GONE) {
-
-                    if(empty_mybooking_div.getVisibility() == View.VISIBLE) {
-                        empty_mybooking_div.setVisibility(View.GONE);
-                    }
-
-                    existing_mybooking_div.setVisibility(View.VISIBLE);
-;                   title.setVisibility(View.VISIBLE);
-                    underline.setVisibility(View.VISIBLE);
-                    initMyBookingData();
-                }
-            }
+            changeViewForMyBookings(notifications);
         }
         return rootView;
+    }
+
+    private void changeViewForMyBookings(int notifications) {
+        if (notifications > 0) { // Should only show existing_mybooking_div if there are bookings and start switching
+            existing_mybooking_div = rootView.findViewById(R.id.existing_mybooking_div);
+            empty_mybooking_div = rootView.findViewById(R.id.empty_mybooking_div);
+
+            if (existing_mybooking_div.getVisibility() == View.GONE) {
+
+                if (empty_mybooking_div.getVisibility() == View.VISIBLE) {
+                    empty_mybooking_div.setVisibility(View.GONE);
+                }
+
+                existing_mybooking_div.setVisibility(View.VISIBLE);
+
+                title.setVisibility(View.VISIBLE);
+                underline.setVisibility(View.VISIBLE);
+                initMyBookingData();
+            }
+        }
     }
 
     @Override
@@ -93,22 +95,22 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(myBookingList != null) {
+        if (myBookingList != null) {
             myBookingList.clear();
         }
     }
 
-    private void initMyBookingData(){
-        DatabaseReference bookingDbReference =  FirebaseDatabase.getInstance().getReference("Users")
+    private void initMyBookingData() {
+        DatabaseReference bookingDbReference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("bookings");
 
         bookingDbReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
 
-                    if(myBookingList != null){
+                    if (myBookingList != null) {
                         myBookingList.clear();
                     }
                     for (DataSnapshot data : snapshot.getChildren()) {
@@ -130,7 +132,7 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
         });
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(rootView.getContext());
@@ -162,7 +164,9 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
                     bundle.putParcelable("bookedTime", bookedTime);
                     bundle.putString("barber", barber);
                     bundle.putInt("id", (position + 1));
-                    bundle.putInt("timeSlotIndex", position);
+                    if (getArguments() != null) {
+                        bundle.putInt("bookingCount", getArguments().getInt("bookingCount"));
+                    }
                     fragment.setArguments(bundle);
                     getActivity()
                             .getSupportFragmentManager()
