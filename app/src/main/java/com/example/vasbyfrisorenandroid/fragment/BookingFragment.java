@@ -36,6 +36,7 @@ import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
 import com.example.vasbyfrisorenandroid.model.barber.Barber;
 import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
 import com.example.vasbyfrisorenandroid.model.date.Days;
+import com.example.vasbyfrisorenandroid.model.db.Database;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.timeslot.OnTimeListener;
 import com.example.vasbyfrisorenandroid.model.timeslot.TimeAdapter;
@@ -86,11 +87,13 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notificationBuilder;
 
+
+    private Database db;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.booking, container, false);
-
+        db = new Database();
         selectedServiceTitle = rootView.findViewById(R.id.selected_service_title);
         selectedServiceImg = rootView.findViewById(R.id.selected_service_img);
         selectedServicePrice = rootView.findViewById(R.id.selected_service_price);
@@ -108,50 +111,18 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
 
         if(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR) == 1){
             resetTimeSlot();
-            dbTimeSlotReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (!snapshot.exists()) {
-                        String[] barbers = rootView.getContext().getResources().getStringArray(R.array.barbers);
-                        for (String barber : barbers) {
-                            initTimeSlotFirebase(barber);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            String[] barbers = rootView.getContext().getResources().getStringArray(R.array.barbers);
+            db.addBarbersTimeslot(barbers);
         }
 
         //for getting current data
-        dbTimeSlotReference.child(barberName.getText().toString())
-                .child(String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)))
-                .child(Objects.requireNonNull(Days.of(Calendar.getInstance().getTime().getDay())).name())
-                .addValueEventListener(new ValueEventListener() {
+        db.getCurrentTimeslotsForSelectedBarber(barberName.getText().toString(),
+                String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)),
+                Objects.requireNonNull(Days.of(Calendar.getInstance().getTime().getDay())).name());
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+        initTimeSlot();
+        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(40));
 
-                        for (DataSnapshot data : snapshot.getChildren()) {
-
-                            TimeSlot timeSlot = data.getValue(TimeSlot.class);
-
-                            if (timeSlot != null) {
-                                timeSlotList.add(timeSlot);
-                            }
-                        }
-                        initTimeSlot();
-                        timeSlotRecyclerView.addItemDecoration(new SpacesItemDecoration(40));
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
         Bundle bundle = this.getArguments();
 
         if (bundle != null) {
@@ -289,47 +260,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         }
     }
 
-    private void initTimeSlotFirebase(String barber) {
-        List<TimeSlot> result;
-        Calendar calendar = Calendar.getInstance();
-        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
-        int weeks = 52;
-
-        for (int i = currentWeek; i < weeks; i++) {
-            int daySelect = calendar.get(Calendar.DAY_OF_WEEK);
-            int lastCallDate = Days.MONDAY.getDay();
-
-            if (daySelect == lastCallDate) {
-                for (int j = 1; j < 6; j++) { //from monday to friday
-                    result = getWeekDaysTimeSet();
-                    dbTimeSlotReference.child(barber)
-                            .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
-                            .child(Objects.requireNonNull(Days.of(j)).name())
-                            .setValue(result);
-                }
-            } else {
-                for (int j = daySelect - 1; j < 6; j++) { //from the daySelect we are now to friday
-                    result = getWeekDaysTimeSet();
-                    dbTimeSlotReference.child(barber)
-                            .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
-                            .child(Objects.requireNonNull(Days.of(j)).name())
-                            .setValue(result);
-                }
-            }
-
-            dbTimeSlotReference.child(barber)
-                    .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
-                    .child(Objects.requireNonNull(Days.of(0)).name())
-                    .setValue(getWeekEndTimeSet(DayOfWeek.SUNDAY)); //Sunday
-            dbTimeSlotReference.child(barber)
-                    .child(String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)))
-                    .child(Objects.requireNonNull(Days.of(6)).name())
-                    .setValue(getWeekEndTimeSet(DayOfWeek.SATURDAY)); //Saturday
-            calendar.add(Calendar.WEEK_OF_YEAR, 1); //add up one week toward
-            calendar.set(Calendar.DAY_OF_WEEK, 1); //starts from monday
-        }
-    }
-
     private void initTimeSlot() {
         timeSlotRecyclerView = rootView.findViewById(R.id.recyclerView);
         timeSlotRecyclerView.setHasFixedSize(true);
@@ -339,79 +269,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
         timeSlotRecyclerView.setLayoutManager(timeSlotLayoutManager);
         timeSlotRecyclerView.setAdapter(timeSlotAdapter);
         timeSlotAdapter.notifyDataSetChanged();
-    }
-
-    private List<TimeSlot> getWeekDaysTimeSet() {
-        List<TimeSlot> result = new ArrayList<>();
-
-        SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
-
-        Calendar calendar = Calendar.getInstance();
-
-        Date date;
-
-        String day;
-
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        date = calendar.getTime();
-        day = date24Format.format(date);
-        result.add(0, new TimeSlot(day, true));
-
-        for (int i = 1; i < 19; i++) {
-
-            // add 15 minutes to the current time; the hour adjusts automatically!
-            calendar.add(Calendar.MINUTE, 30);
-            day = date24Format.format(calendar.getTime());
-
-            result.add(new TimeSlot(day, true));
-        }
-
-        return result;
-    }
-
-    private List<TimeSlot> getWeekEndTimeSet(DayOfWeek dayOfWeek) {
-        List<TimeSlot> result = new ArrayList<>();
-        SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm");
-        Calendar calendar = Calendar.getInstance();
-        Date date;
-        String day;
-
-        if(dayOfWeek == DayOfWeek.SUNDAY) {
-            calendar.set(Calendar.HOUR_OF_DAY, 11);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            date = calendar.getTime();
-            day = date24Format.format(date);
-            result.add(0, new TimeSlot(day, true));
-
-            for (int i = 1; i < 15; i++) {
-
-                // add 15 minutes to the current time; the hour adjusts automatically!
-                calendar.add(Calendar.MINUTE, 30);
-                day = date24Format.format(calendar.getTime());
-
-                result.add(new TimeSlot(day, true));
-            }
-        }else if(dayOfWeek == DayOfWeek.SATURDAY){
-            calendar.set(Calendar.HOUR_OF_DAY, 10);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            date = calendar.getTime();
-            day = date24Format.format(date);
-            result.add(0, new TimeSlot(day, true));
-
-            for (int i = 1; i < 17; i++) {
-
-                // add 15 minutes to the current time; the hour adjusts automatically!
-                calendar.add(Calendar.MINUTE, 30);
-                day = date24Format.format(calendar.getTime());
-
-                result.add(new TimeSlot(day, true));
-            }
-        }
-        return result;
     }
 
     private void initId() {
