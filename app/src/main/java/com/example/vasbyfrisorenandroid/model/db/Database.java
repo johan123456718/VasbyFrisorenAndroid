@@ -2,10 +2,13 @@ package com.example.vasbyfrisorenandroid.model.db;
 
 import androidx.annotation.NonNull;
 
-import com.example.vasbyfrisorenandroid.R;
-import com.example.vasbyfrisorenandroid.decoration.SpacesItemDecoration;
+import com.example.vasbyfrisorenandroid.model.barber.Barber;
 import com.example.vasbyfrisorenandroid.model.date.Days;
+import com.example.vasbyfrisorenandroid.model.db.callbacks.BarberCallback;
+import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
+import com.example.vasbyfrisorenandroid.model.db.callbacks.TimeslotCallback;
 import com.example.vasbyfrisorenandroid.model.timeslot.TimeSlot;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,25 +16,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Driver;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Database implements DatabaseInterface {
     private FirebaseDatabase db;
     private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
     private List<TimeSlot> currentTimeslot;
-    public Database(){
+    private Map<String, Boolean> barbersStatus;
+    private Barber barber;
+    public Database() {
         db = FirebaseDatabase.getInstance();
         currentTimeslot = new ArrayList<>();
-        dbBarbersReference = FirebaseDatabase.getInstance().getReference().child("Barbers");
-        dbTimeSlotReference = FirebaseDatabase.getInstance().getReference().child("Timeslot");
-        dbBookingReference = FirebaseDatabase.getInstance()
+        barbersStatus = new HashMap<>();
+        dbBarbersReference = db.getReference().child("Barbers");
+        dbTimeSlotReference = db.getReference().child("Timeslot");
+        dbBookingReference = db
                 .getReference()
                 .child("Users")
                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
@@ -44,7 +51,6 @@ public class Database implements DatabaseInterface {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-
                     for (String barber : barbers) {
                         initTimeSlotFirebase(barber);
                     }
@@ -59,26 +65,125 @@ public class Database implements DatabaseInterface {
     }
 
     @Override
-    public void getCurrentTimeslotsForSelectedBarber(String barberName, String weekOfYear, String day) {
-
+    public void getCurrentTimeslotsForSelectedBarber(String barberName, String weekOfYear, String day, TimeslotCallback firebaseCallback) {
         dbTimeSlotReference.child(barberName)
                 .child(weekOfYear)
                 .child(Objects.requireNonNull(day))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        currentTimeslot.clear();
                         for (DataSnapshot data : snapshot.getChildren()) {
                             TimeSlot timeSlot = data.getValue(TimeSlot.class);
                             if (timeSlot != null) {
                                 currentTimeslot.add(timeSlot);
                             }
                         }
+                        firebaseCallback.callback(currentTimeslot);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
+                });
+    }
+
+    @Override
+    public void resetTimeslot() {
+        dbTimeSlotReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    data.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void updateTimeslotStatus(String barberName, String weekOfYear, String day, int selectedItem){
+        dbTimeSlotReference
+                .child(barberName) //barber
+                .child(weekOfYear) //week of year
+                .child(day) //day
+                .child(String.valueOf(selectedItem)) //date
+                .child("available") //bool variable
+                .setValue(false);
+    }
+
+    @Override
+    public void getBookingId(BookingCallback firebaseCallback) {
+        dbBookingReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int id = 0;
+                if (snapshot.exists()) {
+                    id = (int) snapshot.getChildrenCount();
+                }
+                firebaseCallback.callback(id);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void getBarberStatus(BarberCallback firebaseCallback) {
+        dbBarbersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot barber : snapshot.getChildren()) {
+                    Barber b = barber.getValue(Barber.class);
+                    if (b != null) {
+                        barbersStatus.put(b.getName(), b.isAvailable());
+                    }
+                }
+                firebaseCallback.callback(barbersStatus);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void addBooking(int id, Map<String, Object> serviceInfo) {
+        dbBookingReference.child(String.valueOf(id)).setValue(serviceInfo);
+    }
+
+    @Override
+    public void getFirstAvailableBarber(BarberCallback firebaseCallback) {
+        dbBarbersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Barber _barber = data.getValue(Barber.class);
+                        if (_barber != null) {
+                            if (_barber.isAvailable()) {
+                                barber = _barber;
+                                break;
+                            }
+                        }
+                    }
+                    firebaseCallback.callback(barber);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
     }
 
@@ -160,7 +265,7 @@ public class Database implements DatabaseInterface {
         Date date;
         String day;
 
-        if(dayOfWeek == DayOfWeek.SUNDAY) {
+        if (dayOfWeek == DayOfWeek.SUNDAY) {
             calendar.set(Calendar.HOUR_OF_DAY, 11);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
@@ -176,7 +281,7 @@ public class Database implements DatabaseInterface {
 
                 result.add(new TimeSlot(day, true));
             }
-        }else if(dayOfWeek == DayOfWeek.SATURDAY){
+        } else if (dayOfWeek == DayOfWeek.SATURDAY) {
             calendar.set(Calendar.HOUR_OF_DAY, 10);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);

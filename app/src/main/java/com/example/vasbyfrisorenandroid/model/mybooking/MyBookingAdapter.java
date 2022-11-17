@@ -63,11 +63,12 @@ public class MyBookingAdapter extends RecyclerView.Adapter<MyBookingAdapter.MyBo
         if(myBooking.getBookedTime().isChecked()){
             holder.newItem.setVisibility(View.GONE);
         }
-
-        holder.img.setImageResource(myBooking.getService().getImgResource());
-        holder.description.setText("Tack för din bokning med " + myBooking.getBarber());
-        holder.time.setText(myBooking.getBookedTime().getBookedDate() + ", " + myBooking.getBookedTime().getTimeTaken());
-        holder.service.setText(myBooking.getService().getServiceTitle());
+        if(myBooking != null) {
+            holder.img.setImageResource(myBooking.getService().getImgResource());
+            holder.description.setText("Tack för din bokning med " + myBooking.getBarber());
+            holder.time.setText(myBooking.getBookedTime().getBookedDate() + ", " + myBooking.getBookedTime().getTimeTaken());
+            holder.service.setText(myBooking.getService().getServiceTitle());
+        }
     }
 
     @Override
