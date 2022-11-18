@@ -7,6 +7,7 @@ import com.example.vasbyfrisorenandroid.model.date.Days;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BarberCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.TimeslotCallback;
+import com.example.vasbyfrisorenandroid.model.mybooking.MyBooking;
 import com.example.vasbyfrisorenandroid.model.timeslot.TimeSlot;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,14 +28,16 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Database implements DatabaseInterface {
-    private FirebaseDatabase db;
-    private DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
-    private List<TimeSlot> currentTimeslot;
-    private Map<String, Boolean> barbersStatus;
+    private final FirebaseDatabase db;
+    private final DatabaseReference dbBookingReference, dbTimeSlotReference, dbBarbersReference;
+    private final List<TimeSlot> currentTimeslot;
+    private final List<MyBooking> myBookings;
+    private final Map<String, Boolean> barbersStatus;
     private Barber barber;
     public Database() {
         db = FirebaseDatabase.getInstance();
         currentTimeslot = new ArrayList<>();
+        myBookings = new ArrayList<>();
         barbersStatus = new HashMap<>();
         dbBarbersReference = db.getReference().child("Barbers");
         dbTimeSlotReference = db.getReference().child("Timeslot");
@@ -185,6 +188,36 @@ public class Database implements DatabaseInterface {
 
             }
         });
+    }
+
+    @Override
+    public void getMyBookings(BookingCallback firebaseCallback) {
+        dbBookingReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        MyBooking myBooking = data.getValue(MyBooking.class);
+                        if (myBooking != null) {
+                            myBookings.add(myBooking);
+                        }
+                    }
+                    firebaseCallback.callback(myBookings);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public Task<Void> updateBookingTimeStatus(int position, BookingCallback firebaseCallback) {
+        return dbBookingReference.child(String.valueOf(position))
+                .child("bookedTime")
+                .child("checked").setValue(true);
     }
 
     private void initTimeSlotFirebase(String barber) {
