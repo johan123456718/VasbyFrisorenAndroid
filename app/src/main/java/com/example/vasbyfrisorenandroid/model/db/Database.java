@@ -3,7 +3,6 @@ package com.example.vasbyfrisorenandroid.model.db;
 import androidx.annotation.NonNull;
 
 import com.example.vasbyfrisorenandroid.model.barber.Barber;
-import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
 import com.example.vasbyfrisorenandroid.model.date.Days;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BarberCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
@@ -221,45 +220,6 @@ public class Database implements DatabaseInterface {
                 .child("checked").setValue(true);
     }
 
-    @Override
-    public void removeBooking(int selectedItemId, String barber, BookedTime bookedTime) {
-        dbBookingReference.child(String.valueOf(selectedItemId))
-                .child("bookedTime")
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String timeTaken = (String) snapshot.child("timeTaken").getValue(String.class);
-                dbTimeSlotReference.child(barber)
-                        .child(String.valueOf(bookedTime.getWeek()))
-                        .child(bookedTime.getBookedDay())
-                        .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        dbBookingReference.removeValue().addOnCompleteListener(v -> {
-                            int timeSlotIndex = getTimeSlotIndex(timeTaken, snapshot);
-                            dbTimeSlotReference.child(barber)
-                                    .child(String.valueOf(bookedTime.getWeek()))
-                                    .child(bookedTime.getBookedDay())
-                                    .child(String.valueOf(timeSlotIndex))
-                                    .child("available")
-                                    .setValue(true);
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void initTimeSlotFirebase(String barber) {
         List<TimeSlot> result;
         Calendar calendar = Calendar.getInstance();
@@ -372,18 +332,5 @@ public class Database implements DatabaseInterface {
             }
         }
         return result;
-    }
-
-    private int getTimeSlotIndex(String timeTaken, DataSnapshot snapshot) {
-        int timeSlotIndex = 0;
-        for (DataSnapshot data : snapshot.getChildren()) {
-            String time = (String) data.child("time").getValue(String.class);
-            if (Objects.equals(timeTaken, time)) {
-                break;
-            } else {
-                timeSlotIndex++;
-            }
-        }
-        return timeSlotIndex;
     }
 }

@@ -2,6 +2,7 @@ package com.example.vasbyfrisorenandroid.fragment;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
-import com.example.vasbyfrisorenandroid.model.db.Database;
 import com.example.vasbyfrisorenandroid.model.service.Service;
+import com.example.vasbyfrisorenandroid.model.timeslot.TimeSlot;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -27,23 +33,25 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 public class PickedMyBookingFragment extends Fragment implements View.OnClickListener {
 
     private View rootView;
     private Service service;
     private BookedTime bookedTime;
+
     private TextView bookingService, bookingBarber, bookingDate, bookingPrice, bookingTime;
     private ImageView bookingImg, backButton, ivOutput;
     private Button cancelBookButton;
-    private int selectedItemId;
+    private int selectedItemId;//, timeSlotIndex;
     private String barber;
-    private Database database;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.current_picked_mybooking, container, false);
+
         bookingService = rootView.findViewById(R.id.selected_booking_service);
         bookingBarber = rootView.findViewById(R.id.selected_booking_barber);
         bookingDate = rootView.findViewById(R.id.selected_booking_date);
@@ -53,8 +61,8 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
         cancelBookButton = rootView.findViewById(R.id.cancelBook_button);
         backButton = rootView.findViewById(R.id.backbutton);
         ivOutput = rootView.findViewById(R.id.iv_output);
-        database = new Database();
         Bundle bundle = this.getArguments();
+
 
         if (bundle != null) {
             barber = bundle.getString("barber");
@@ -122,7 +130,52 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
                 break;
 
             case R.id.cancelBook_button:
-                database.removeBooking(selectedItemId, barber, bookedTime);
+
+                DatabaseReference dbUsersReference = FirebaseDatabase
+                        .getInstance()
+                        .getReference("Users")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child("bookings")
+                        .child(String.valueOf(selectedItemId));
+
+                dbUsersReference.child("bookedTime").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String timeTaken = (String) snapshot.child("timeTaken").getValue(String.class);
+
+                        DatabaseReference dbTimeSlotReference = FirebaseDatabase
+                                .getInstance()
+                                .getReference("Timeslot")
+                                .child(barber)
+                                .child(String.valueOf(bookedTime.getWeek()))
+                                .child(bookedTime.getBookedDay());
+                        dbTimeSlotReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int timeSlotIndex = getTimeSlotIndex(timeTaken, snapshot);
+                                DatabaseReference dbTimeSlotReference = FirebaseDatabase
+                                        .getInstance()
+                                        .getReference("Timeslot")
+                                        .child(barber)
+                                        .child(String.valueOf(bookedTime.getWeek()))
+                                        .child(bookedTime.getBookedDay())
+                                        .child(String.valueOf(timeSlotIndex))
+                                        .child("available");
+                                dbUsersReference.removeValue().addOnCompleteListener(v -> enableTimeSlotAgain(dbTimeSlotReference));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 fragment = new MyBookingsFragment();
                 b = this.getArguments();
                 if (b != null) {
@@ -139,5 +192,22 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
                 }
                 break;
         }
+    }
+
+    private void enableTimeSlotAgain(DatabaseReference dbTimeSlotReference) {
+        dbTimeSlotReference.setValue(true);
+    }
+
+    private int getTimeSlotIndex(String timeTaken, DataSnapshot snapshot) {
+        int timeSlotIndex = 0;
+        for (DataSnapshot data : snapshot.getChildren()) {
+            String time = (String) data.child("time").getValue(String.class);
+            if (Objects.equals(timeTaken, time)) {
+                break;
+            } else {
+                timeSlotIndex++;
+            }
+        }
+        return timeSlotIndex;
     }
 }

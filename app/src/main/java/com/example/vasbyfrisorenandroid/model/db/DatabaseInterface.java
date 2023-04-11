@@ -1,6 +1,5 @@
 package com.example.vasbyfrisorenandroid.model.db;
 
-import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BarberCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.TimeslotCallback;
@@ -19,5 +18,4 @@ public interface DatabaseInterface {
     void getFirstAvailableBarber(BarberCallback firebaseCallback);
     void getMyBookings(BookingCallback firebaseCallback);
     Task<Void> updateBookingTimeStatus(int position, BookingCallback firebaseCallback);
-    void removeBooking(int selectedItemId, String barber, BookedTime bookedTime);
 }
