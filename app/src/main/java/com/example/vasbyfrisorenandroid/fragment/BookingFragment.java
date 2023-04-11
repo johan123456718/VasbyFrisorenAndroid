@@ -38,7 +38,6 @@ import com.example.vasbyfrisorenandroid.model.db.Database;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BarberCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
 import com.example.vasbyfrisorenandroid.model.db.callbacks.TimeslotCallback;
-import com.example.vasbyfrisorenandroid.model.mybooking.MyBooking;
 import com.example.vasbyfrisorenandroid.model.service.Service;
 import com.example.vasbyfrisorenandroid.model.timeslot.OnTimeListener;
 import com.example.vasbyfrisorenandroid.model.timeslot.TimeAdapter;
@@ -71,11 +70,13 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     private int selectedItem;
     private ImageView barberImg, backButton;
     private RelativeLayout barberBox;
+
     private static final int NOTIFICATION_ID = 1;
     private NotificationManagerCompat notificationManager;
     private NotificationCompat.Builder notificationBuilder;
-    private Database db;
 
+
+    private Database db;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -288,11 +289,6 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
 
                         Toast.makeText(v.getContext(), "Bokningen lyckades!", Toast.LENGTH_SHORT).show();
                         notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-                    }
-
-                    @Override
-                    public void callback(List<MyBooking> myBookings) {
-
                     }
                 });
                 break;

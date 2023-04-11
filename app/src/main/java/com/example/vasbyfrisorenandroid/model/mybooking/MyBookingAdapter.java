@@ -59,10 +59,11 @@ public class MyBookingAdapter extends RecyclerView.Adapter<MyBookingAdapter.MyBo
     @Override
     public void onBindViewHolder(@NonNull MyBookingViewHolder holder, int position) {
         MyBooking myBooking = myBookingList.get(position);
+
+        if(myBooking.getBookedTime().isChecked()){
+            holder.newItem.setVisibility(View.GONE);
+        }
         if(myBooking != null) {
-            if(myBooking.getBookedTime().isChecked()){
-                holder.newItem.setVisibility(View.GONE);
-            }
             holder.img.setImageResource(myBooking.getService().getImgResource());
             holder.description.setText("Tack för din bokning med " + myBooking.getBarber());
             holder.time.setText(myBooking.getBookedTime().getBookedDate() + ", " + myBooking.getBookedTime().getTimeTaken());

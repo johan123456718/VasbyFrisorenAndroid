@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.vasbyfrisorenandroid.R;
 import com.example.vasbyfrisorenandroid.model.booking.BookedTime;
-import com.example.vasbyfrisorenandroid.model.db.Database;
-import com.example.vasbyfrisorenandroid.model.db.callbacks.BookingCallback;
 import com.example.vasbyfrisorenandroid.model.mybooking.MyBooking;
 import com.example.vasbyfrisorenandroid.model.mybooking.MyBookingAdapter;
 import com.example.vasbyfrisorenandroid.model.mybooking.OnMyBookingListener;
@@ -35,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyBookingsFragment extends Fragment implements OnMyBookingListener, View.OnClickListener {
+
+
     private View rootView;
     private List<MyBooking> myBookingList;
     private RelativeLayout existing_mybooking_div, empty_mybooking_div;
@@ -44,7 +44,6 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
     private TextView title;
     private LinearLayout underline;
     private ImageView backButton;
-    private Database db;
 
     @Nullable
     @Override
@@ -56,7 +55,6 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
         title.setVisibility(View.GONE);
         underline.setVisibility(View.GONE);
         myBookingList = new ArrayList<>();
-        db = new Database();
 
         Bundle b = getArguments();
         int notifications;
@@ -103,16 +101,33 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
     }
 
     private void initMyBookingData() {
-        db.getMyBookings(new BookingCallback() {
-            @Override
-            public void callback(int id) {
+        DatabaseReference bookingDbReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("bookings");
 
+        bookingDbReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+
+                    if (myBookingList != null) {
+                        myBookingList.clear();
+                    }
+                    for (DataSnapshot data : snapshot.getChildren()) {
+
+                        MyBooking myBooking = data.getValue(MyBooking.class);
+
+                        if (myBooking != null) {
+                            myBookingList.add(myBooking);
+                        }
+                    }
+                    initRecyclerView();
+                }
             }
 
             @Override
-            public void callback(List<MyBooking> myBookings) {
-                myBookingList = myBookings;
-                initRecyclerView();
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -124,42 +139,42 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
         adapter = new MyBookingAdapter(myBookingList, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onServiceClick(View view, int position) {
-        db.updateBookingTimeStatus(position, new BookingCallback() {
-            @Override
-            public void callback(int id) {
 
-            }
+        DatabaseReference bookingDbReference = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("bookings")
+                .child(String.valueOf(position + 1))
+                .child("bookedTime")
+                .child("checked");
 
-            @Override
-            public void callback(List<MyBooking> myBookings) {
+        Service service = myBookingList.get(position).getService();
+        BookedTime bookedTime = myBookingList.get(position).getBookedTime();
+        String barber = myBookingList.get(position).getBarber();
 
-            }
-        }).addOnCompleteListener(task -> {
-            Fragment fragment = new PickedMyBookingFragment();
-            Service service = myBookingList.get(position).getService();
-            BookedTime bookedTime = myBookingList.get(position).getBookedTime();
-            String barber = myBookingList.get(position).getBarber();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("service", service);
-            bundle.putParcelable("bookedTime", bookedTime);
-            bundle.putString("barber", barber);
-            bundle.putInt("id", (position));
-            if (getArguments() != null) {
-                bundle.putInt("bookingCount", getArguments().getInt("bookingCount"));
-            }
-            fragment.setArguments(bundle);
-            getActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        });
+        bookingDbReference.setValue(true)
+                .addOnCompleteListener(task -> {
+                    Fragment fragment = new PickedMyBookingFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("service", service);
+                    bundle.putParcelable("bookedTime", bookedTime);
+                    bundle.putString("barber", barber);
+                    bundle.putInt("id", (position + 1));
+                    if (getArguments() != null) {
+                        bundle.putInt("bookingCount", getArguments().getInt("bookingCount"));
+                    }
+                    fragment.setArguments(bundle);
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right)
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                });
     }
 
     @Override
