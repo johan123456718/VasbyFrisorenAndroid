@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -310,6 +311,7 @@ public class BookingFragment extends Fragment implements View.OnClickListener, O
     @Override
     public void onTimeClick(View view, int position) {
         selectedItem = position;
+        Log.d("selectedItem", String.valueOf(selectedItem));
     }
 
     private void showPopUp(View v) {

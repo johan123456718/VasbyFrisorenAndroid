@@ -74,7 +74,11 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
             bookingPrice.setText(String.valueOf(service.getPrice()) + " kr");
             bookingTime.setText(bookedTime.getTimeTaken());
             bookingImg.setImageResource(service.getImgResource());
-            selectedItemId = bundle.getInt("id");
+            selectedItemId = bundle.getInt("selectedItemId");
+            Log.d("selectedItemId", String.valueOf(selectedItemId));
+            Log.d("barber", String.valueOf(barber));
+            Log.d("bookedTime.getWeek", String.valueOf(bookedTime.getWeek()));
+            Log.d("bookedTime.getBookedDay", bookedTime.getBookedDay());
             initQRCode();
         }
 
@@ -141,34 +145,45 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
                 dbUsersReference.child("bookedTime").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String timeTaken = (String) snapshot.child("timeTaken").getValue(String.class);
-
-                        DatabaseReference dbTimeSlotReference = FirebaseDatabase
-                                .getInstance()
-                                .getReference("Timeslot")
-                                .child(barber)
-                                .child(String.valueOf(bookedTime.getWeek()))
-                                .child(bookedTime.getBookedDay());
-                        dbTimeSlotReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int timeSlotIndex = getTimeSlotIndex(timeTaken, snapshot);
+                        if(snapshot.hasChild("timeTaken")) {
+                            String timeTaken = (String) snapshot.child("timeTaken").getValue(String.class);
+                            if(timeTaken != null) {
+                                Log.d("[PickedMyBookingFragment].timeTaken", String.valueOf(timeTaken));
+                                Log.d("[PickedMyBookingFragment].barber", String.valueOf(barber));
+                                Log.d("[PickedMyBookingFragment].bookedTime.getWeek", String.valueOf(bookedTime.getWeek()));
+                                Log.d("[PickedMyBookingFragment].bookedTime.getBookedDay", bookedTime.getBookedDay());
                                 DatabaseReference dbTimeSlotReference = FirebaseDatabase
                                         .getInstance()
                                         .getReference("Timeslot")
                                         .child(barber)
                                         .child(String.valueOf(bookedTime.getWeek()))
-                                        .child(bookedTime.getBookedDay())
-                                        .child(String.valueOf(timeSlotIndex))
-                                        .child("available");
-                                dbUsersReference.removeValue().addOnCompleteListener(v -> enableTimeSlotAgain(dbTimeSlotReference));
-                            }
+                                        .child(bookedTime.getBookedDay());
+                                dbTimeSlotReference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        int timeSlotIndex = getTimeSlotIndex(timeTaken, snapshot);
+                                        DatabaseReference dbTimeSlotReference = FirebaseDatabase
+                                                .getInstance()
+                                                .getReference("Timeslot")
+                                                .child(barber)
+                                                .child(String.valueOf(bookedTime.getWeek()))
+                                                .child(bookedTime.getBookedDay())
+                                                .child(String.valueOf(timeSlotIndex))
+                                                .child("available");
+                                        dbUsersReference.removeValue().addOnCompleteListener(v -> enableTimeSlotAgain(dbTimeSlotReference));
+                                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
+                                    }
+                                });
+                            }else{
+                                Log.d("[PickedMyBookingFragment].timeTaken", "value of child node 'timeTaken' is null");
                             }
-                        });
+                        }else {
+                            Log.d("[PickedMyBookingFragment].timeTaken", "child node 'timeTaken' does not exist in the snapshot");
+                        }
                     }
 
                     @Override
@@ -201,13 +216,13 @@ public class PickedMyBookingFragment extends Fragment implements View.OnClickLis
     private int getTimeSlotIndex(String timeTaken, DataSnapshot snapshot) {
         int timeSlotIndex = 0;
         for (DataSnapshot data : snapshot.getChildren()) {
-            String time = (String) data.child("time").getValue(String.class);
-            if (Objects.equals(timeTaken, time)) {
-                break;
-            } else {
-                timeSlotIndex++;
+            String time = data.child("time").getValue(String.class);
+            if (timeTaken.equals(time)) {
+                return timeSlotIndex;
             }
+            timeSlotIndex++;
         }
-        return timeSlotIndex;
+        // If the timeTaken is not found, return -1 or throw an exception
+        return -1;
     }
 }

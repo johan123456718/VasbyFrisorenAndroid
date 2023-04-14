@@ -2,6 +2,7 @@ package com.example.vasbyfrisorenandroid.fragment;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,7 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
     }
 
     private void initRecyclerView() {
+        Log.d("[MyBookingsFragment].initRecyclerView", "Starting init RecyclerView");
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(rootView.getContext());
@@ -148,7 +150,7 @@ public class MyBookingsFragment extends Fragment implements OnMyBookingListener,
             bundle.putParcelable("service", service);
             bundle.putParcelable("bookedTime", bookedTime);
             bundle.putString("barber", barber);
-            bundle.putInt("id", (position));
+            bundle.putInt("selectedItemId", (position));
             if (getArguments() != null) {
                 bundle.putInt("bookingCount", getArguments().getInt("bookingCount"));
             }
